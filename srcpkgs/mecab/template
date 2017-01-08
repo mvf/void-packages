@@ -1,0 +1,52 @@
+# Template file for 'mecab'
+pkgname=mecab
+version=0.996
+revision=1
+_githash=32041d9504d11683ef80a6556173ff43f79d1268
+build_wrksrc=mecab
+build_style=gnu-configure
+hostmakedepends="autoconf automake libtool"
+short_desc="Yet another Japanese morphological analyzer"
+maintainer="Matthias von Faber <mvf@gmx.eu>"
+license="BSD-3-Clause, GPL-2.0-only, LGPL-2.0-only"
+homepage="https://taku910.github.io/mecab/"
+distfiles="https://github.com/taku910/mecab/archive/$_githash.tar.gz"
+checksum=d186f7d12b3e28a60d43a2cbbf1b99ba61c9513873a8b56b28ea9188f24353e8
+conf_files="/etc/mecabrc"
+
+post_install() {
+	vlicense BSD
+	vlicense GPL
+	vlicense LGPL
+}
+
+pre_configure() {
+	./autogen.sh
+}
+
+pre_build() {
+	# Force flags from environment
+	sed -i -e 's|^CFLAGS\b|#CFLAGS|' \
+	       -e 's|^CXXFLAGS\b|#CXXFLAGS|' \
+	       -e 's|^LDFLAGS\b|#LDFLAGS|' \
+	       Makefile src/Makefile
+}
+
+libmecab_package() {
+	depends="${sourcepkg}>=${version}_${revision}"
+	short_desc+=" - runtime libraries"
+	pkg_install() {
+		vmove "usr/lib/*.so.*"
+	}
+}
+
+libmecab-devel_package() {
+	depends="lib${sourcepkg}>=${version}_${revision}"
+	short_desc+=" - development files"
+	pkg_install() {
+		vmove usr/include
+		vmove usr/bin/mecab-config
+		vmove "usr/lib/*.a"
+		vmove "usr/lib/*.so"
+	}
+}
