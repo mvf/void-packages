@@ -1,0 +1,7 @@
+case ${ACTION} in
+post)
+	install -d 755 var/lib/mecab/dic/juman
+	usr/libexec/mecab/mecab-dict-index -d usr/share/mecab/dic/juman -o var/lib/mecab/dic/juman -f utf-8 -t utf-8
+	cp usr/share/mecab/dic/juman/dicrc var/lib/mecab/dic/juman/
+	;;
+esac

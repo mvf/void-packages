@@ -1,0 +1,45 @@
+# Template file for 'mecab-jumandic-devel'
+pkgname=mecab-jumandic-devel
+version=7.0.20130310
+revision=1
+_githash=32041d9504d11683ef80a6556173ff43f79d1268
+wrksrc=mecab-${_githash}/mecab-jumandic
+hostmakedepends="mecab"
+depends="mecab"
+short_desc="Juman dictionary for MeCab - development files"
+maintainer="Matthias von Faber <mvf@gmx.eu>"
+license="GPL"
+homepage="https://taku910.github.io/mecab/"
+distfiles="https://github.com/taku910/mecab/archive/$_githash.tar.gz"
+checksum=d186f7d12b3e28a60d43a2cbbf1b99ba61c9513873a8b56b28ea9188f24353e8
+noarch=yes
+
+do_install() {
+	local _dicdir=usr/share/mecab/dic/juman
+	vmkdir $_dicdir
+	vcopy "*.csv" $_dicdir/
+	vcopy "*.def" $_dicdir/
+	vcopy dicrc $_dicdir/
+}
+
+# mecab-jumandic-eucjp_package() {
+# 	short_desc="Juman dictionary for MeCab - EUC-JP encoding"
+# 	noarch=yes
+# 	pkg_install() {
+# 		local _dicdir="$PKGDESTDIR/var/lib/mecab/dic/juman-eucjp"
+# 		install -d -m 755 "$_dicdir"
+# 		/usr/libexec/mecab/mecab-dict-index -d "$PWD" -o "$_dicdir" -f utf-8 -t euc-jp
+# 		cp dicrc "$_dicdir/"
+# 	}
+# }
+
+mecab-jumandic-utf8_package() {
+	short_desc="Juman dictionary for MeCab - UTF-8 encoding"
+	noarch=yes
+	pkg_install() {
+		local _dicdir="$PKGDESTDIR/var/lib/mecab/dic/juman-utf8"
+		install -d -m 755 "$_dicdir"
+		/usr/libexec/mecab/mecab-dict-index -d "$PWD" -o "$_dicdir" -f utf-8 -t utf-8
+		cp dicrc "$_dicdir/"
+	}
+}
