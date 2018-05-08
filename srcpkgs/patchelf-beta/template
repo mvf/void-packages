@@ -1,0 +1,19 @@
+# Template file for 'patchelf-beta'
+pkgname=patchelf-beta
+_gitrev=1fa4d36fead44333528cbee4b5c04c207ce77ca4
+version="${_gitrev:0:7}"
+conflicts="${pkgname%*-beta}"
+wrksrc="${pkgname%*-beta}-${_gitrev}"
+revision=1
+build_style="gnu-configure"
+hostmakedepends="autoconf automake"
+short_desc="Utility for modifing existing ELF executables and libraries"
+maintainer="Matthias von Faber <mvf@gmx.eu>"
+license="GPL-3"
+homepage="http://nixos.org/patchelf.html"
+distfiles="https://github.com/NixOS/patchelf/archive/${_gitrev}.tar.gz"
+checksum=f40bb4f6bd2e659aa07338cdc1a5a27e9872852d0336b8e997edb590052a4207
+
+pre_configure() {
+	./bootstrap.sh
+}
