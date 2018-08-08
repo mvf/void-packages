@@ -1,0 +1,11 @@
+# Template file for 'linux-headers-dummy'
+pkgname=linux-headers-dummy
+version=9000.1
+revision=1
+build_style=meta
+homepage="https://www.github.com/mvf"
+short_desc="Linux headers dummy package for custom kernels"
+maintainer="Matthias von Faber <mvf@gmx.eu>"
+license="Public domain"
+noarch=yes
+provides="linux-headers-${version}_${revision}"
