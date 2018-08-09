@@ -3,7 +3,7 @@ pkgname=proot
 version=5.1.0
 revision=5
 wrksrc="PRoot-${version}"
-makedepends="libarchive-devel talloc-devel"
+makedepends="libarchive-devel"
 short_desc="User-space implementation of chroot, mount --bind, and binfmt_misc"
 maintainer="Juan RP <xtraeme@voidlinux.eu>"
 license="GPL-2"
@@ -19,6 +19,10 @@ pre_build() {
 	sed -i "s,--output ,--output-target ,g" src/GNUmakefile
 	# Fix glibc ptrace.h specific constants for musl libc
 	cp ${FILESDIR}/ptrace_compat.h ${wrksrc}/src
+	mkdir -p ${wrksrc}/src/talloc
+	cp ${FILESDIR}/talloc.c ${wrksrc}/src/talloc
+	cp ${FILESDIR}/talloc.h ${wrksrc}/src/talloc
+	cp ${FILESDIR}/replace.h ${wrksrc}/src/talloc
 }
 do_build() {
 	cd src

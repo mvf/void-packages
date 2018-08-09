@@ -1,0 +1,25 @@
+--- src/GNUmakefile
++++ src/GNUmakefile
+@@ -14,9 +14,9 @@ STRIP    = $(CROSS_COMPILE)strip
+ OBJCOPY  = $(CROSS_COMPILE)objcopy
+ OBJDUMP  = $(CROSS_COMPILE)objdump
+ 
+-CPPFLAGS += -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -I. -I$(VPATH)
+-CFLAGS   += -Wall -Wextra -O2
+-LDFLAGS  += -ltalloc
++CPPFLAGS += -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -I. -I$(VPATH) -Italloc
++CFLAGS   += -Wall -Wextra -Os -static
++LDFLAGS  += -static
+ 
+ CARE_LDFLAGS = -larchive
+ 
+@@ -57,6 +57,9 @@ OBJECTS += \
+ 	extension/fake_id0/fake_id0.o \
+ 	loader/loader-wrapped.o
+ 
++OBJECTS += \
++	talloc/talloc.o
++
+ define define_from_arch.h
+ $2$1 := $(shell $(CC) $1 -E -dM -DNO_LIBC_HEADER $(SRC)/arch.h | grep -w $2 | cut -f 3 -d ' ')
+ endef
