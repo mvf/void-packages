@@ -1,0 +1,19 @@
+# Template file for 'python3-pypillowfight'
+pkgname=python3-pypillowfight
+version=0.2.4
+revision=1
+wrksrc="libpillowfight-${version}"
+build_style=python3-module
+hostmakedepends="python3-setuptools"
+makedepends="python3-devel"
+depends="python3-Pillow"
+short_desc="Small image processing library"
+maintainer="Matthias von Faber <mvf@gmx.eu>"
+license="GPL-2.0-only"
+homepage="https://gitlab.gnome.org/World/OpenPaperwork/libpillowfight"
+distfiles="${homepage}/-/archive/${version}/libpillowfight-${version}.tar.bz2"
+checksum=e28dac4409f1eaa7ed843453948f08a5f717f1106abf808aa82fd19702e0910e
+
+pre_build() {
+    echo "#define INTERNAL_PILLOWFIGHT_VERSION \"${version}\"" > src/pillowfight/_version.h
+}
