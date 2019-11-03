@@ -1,6 +1,6 @@
 # Template file for 'gitea'
 pkgname=gitea
-version=1.10.4
+version=1.11.2
 revision=1
 build_style=go
 go_import_path=code.gitea.io/gitea
@@ -20,10 +20,10 @@ go_import_path=code.gitea.io/gitea
 #   * tidb: This is an alternate database engine for users who would
 #     rather not use SQLite3 for some reason.  It is also potentially
 #     more resiliant to corrupted writes.
-go_build_tags="bindata sqlite pam tidb"
+go_build_tags="bindata sqlite"
 go_ldflags=" -X main.Version=${version}"
 hostmakedepends="go-bindata git"
-makedepends="sqlite-devel pam-devel"
+makedepends="sqlite-devel"
 depends="git"
 short_desc="Git with a cup of Tea"
 maintainer="Michael Aldridge <maldridge@voidlinux.org>"
@@ -31,7 +31,7 @@ license="MIT"
 homepage="https://gitea.io"
 changelog="https://github.com/go-gitea/gitea/blob/master/CHANGELOG.md"
 distfiles="https://github.com/go-gitea/gitea/archive/v${version}.tar.gz"
-checksum=e937ce3e37e5ce732d52a5ce5ed7467cab880ee609f686f68015c1e4f810191c
+checksum=fca0ba2bd7c43c211cdb409f6bec3623d4b9d490bdd15a554abd4007033c1800
 nocross="https://api.travis-ci.org/v3/job/616733825/log.txt"
 
 system_accounts="_gitea"
