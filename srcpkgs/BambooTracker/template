@@ -1,0 +1,33 @@
+# Template file for 'BambooTracker'
+pkgname=BambooTracker
+version=0.5.2
+revision=2
+_emu2149_gitrev=63c0fe07df89bebdaccbfe982a3f737b39b409d3
+configure_args="-DSYSTEM_RTAUDIO=1 -DSYSTEM_RTMIDI=1"
+build_style=cmake
+create_wrksrc=yes
+build_wrksrc="${pkgname}-${version}"
+hostmakedepends="pkg-config qt6-tools-devel"
+makedepends="alsa-lib-devel jack-devel pulseaudio-devel rtaudio-devel
+ rtmidi-devel qt6-base-devel qt6-multimedia-devel qt6-qt5compat-devel"
+short_desc="YM2608 (OPNA) music tracker"
+maintainer="Matthias von Faber <mvf@gmx.eu>"
+license="GPL-2.0-or-later"
+homepage="https://bambootracker.github.io/BambooTracker/"
+changelog="https://github.com/BambooTracker/BambooTracker/raw/master/CHANGELOG.md"
+distfiles="https://github.com/rerrahkr/BambooTracker/archive/v${version}.tar.gz
+ https://github.com/rerrahkr/emu2149/archive/${_emu2149_gitrev}.tar.gz"
+checksum="2ded6425de7b47339f553ed2fa43d30ab07d0f8fc29e9e55ec5a561ec40c659f
+ dce6b75fba6665283bb35b988b9cba82d243a60f8950eca0d4de10525c471bcd"
+
+post_extract() {
+	cd ${wrksrc}/${build_wrksrc}/submodules
+	for src_dest in \
+	 emu2149-$_emu2149_gitrev:emu2149/src
+	do
+		_src=${src_dest%:*}
+		_dst=${src_dest#*:}
+		rmdir $_dst
+		ln -sr $wrksrc/$_src $_dst
+	done
+}
