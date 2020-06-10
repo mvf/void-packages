@@ -1,0 +1,146 @@
+# Template file for 'zyn-fusion'
+pkgname=zyn-fusion
+version=3.0.5
+revision=1
+create_wrksrc=yes
+build_style=cmake
+build_wrksrc="zynaddsubfx-${version}"
+configure_args="-DDefaultOutput=jack -DDefaultInput=jack -DGuiModule=zest"
+hostmakedepends="bison pkg-config python ruby"
+# FIXME: Review the makedeps, hostmakedepends seem fine
+makedepends="MesaLib-devel alsa-lib-devel fftw-devel jack-devel liblo-devel libuv-devel mxml-devel portaudio-devel zlib-devel"
+depends="zyn-fusion-data"
+conflicts="zynaddsubfx"
+short_desc="ZynAddSubFX with a new interactive UI"
+maintainer="Matthias von Faber <mvf@gmx.eu>"
+# FIXME: check license
+license="GPL-2.0-or-later"
+homepage="https://zynaddsubfx.sourceforge.io/zyn-fusion.html"
+distfiles="
+ ${SOURCEFORGE_SITE}/zynaddsubfx/zynaddsubfx/${version}/zynaddsubfx-${version}.tar.bz2
+ https://github.com/mruby-zest/mruby-zest-build/archive/${version}.tar.gz
+ https://github.com/pbosetti/mruby-complex/archive/4f57a1ef9f968e9d5eef53667c7960a2e98c9750.tar.gz
+ https://github.com/gromnitsky/mruby-dir-glob/archive/334c040a2e2c4c2689f8c3440168011f64d57ada.tar.gz
+ https://github.com/IceDragon200/mruby-glew/archive/6849202f885516b381406e799dcdb430065e19cf.tar.gz
+ https://github.com/IceDragon200/mruby-glfw3/archive/0eeee012fd4bbd6544dd34f17ce2b476ad71d86b.tar.gz
+ https://github.com/iij/mruby-io/archive/1c4428880b2f0f0fcd81ea2debc5f4459a7ed53c.tar.gz
+ https://github.com/mruby-zest/mruby-nanovg/archive/d7d4e1ce434131babb5fd6026201011f5b0b50ea.tar.gz
+ https://github.com/iij/mruby-regexp-pcre/archive/cd13fb15fd6b813fc6c9bc2f17db20257f71bb0c.tar.gz
+ https://github.com/yui-knk/mruby-set/archive/68334311ac7386eef84f3034a256e7135a87625d.tar.gz
+ https://github.com/matsumoto-r/mruby-sleep/archive/263d70351a4f75a875f2a35ab9a9128d1ef5da90.tar.gz
+ https://github.com/memononen/nanovg/archive/b83cf926525e7cea8d2483da2a75852b8c7b6d28.tar.gz
+ https://github.com/mruby-zest/pugl/archive/d87062625ed652df9455bd6f60ea89c53515c43a.tar.gz
+ https://github.com/fundamental/rtosc/archive/70307782622c668a325992f6887f354ca30d5e14.tar.gz
+ https://github.com/mruby/mruby/archive/e5b61d34f65cabfbe88f3f1709a1f9cff86585de.tar.gz
+ https://github.com/mruby-zest/mruby-qml-parse/archive/a3e687124b5afe51cdc4d8d36cbff7204e81a1b4.tar.gz
+ https://github.com/mruby-zest/mruby-qml-spawn/archive/77f782643c78a9cfe48e49f027d9978fb5e27d77.tar.gz
+ https://github.com/mruby-zest/mruby-zest/archive/8352b7ae4a0efba111f72572d993efb892a27761.tar.gz
+ https://github.com/mruby-zest/osc-bridge/archive/67b0b5c85e0072ea0bee1129a1ec8cef1328faaa.tar.gz
+ https://github.com/mruby/mgem-list/archive/2033837203c8a141b1f9d23bb781fe0cbaefbd24.tar.gz
+ https://github.com/iij/mruby-pack/archive/383a9c79e191d524a9a2b4107cc5043ecbf6190b.tar.gz
+ https://github.com/iij/mruby-process/archive/95da206a5764f4e80146979b8e35bd7a9afd6850.tar.gz
+ https://github.com/ksss/mruby-file-stat/archive/e9760c0d44bb8576b05f03aa5d23340e2312ffc8.tar.gz
+ https://github.com/iij/mruby-errno/archive/b4415207ff6ea62360619c89a1cff83259dc4db0.tar.gz
+ https://github.com/iij/mruby-dir/archive/89dceefa1250fb1ae868d4cb52498e9e24293cd1.tar.gz
+"
+checksum="
+ 7447322268114a1e0ac5f281ac37a09a78e761a7be61999caf79100049789f63
+ 9ec2192f0550f8e4d6cc19783f359835ac1f5b1dcdf62a95171f80faa6c60d2a
+ 9805de49dc094e5a6bf98745af9626c258063ae81cc34f13fdd05fa3b208dc0c
+ c9d1a1a2f0e14d7733ddc73c6af5da8e658a0cfa1567cab6f0b2b0af207e70c7
+ 9a732b7c6eac1caa957b0f3d2f738ddfcbcb32493e1bc81115e8614d2176bdf7
+ 5b7b7d71bac0db682f51d814a391650ca4286890a1161853bd6b74b1622426bd
+ 7148ca0f72307379991c2f69c931d0c43a67f1171ba1a43cecaf4d84a03ab7e4
+ e2cc83de43aee95890b9f4093a7ad8220cc7978ddc3ade2ed5cfd0d9a0b8d3c1
+ cf0f58f5ebc97d64e241be48985b349f8a010597712f8dda419c53af18169f53
+ 5c8419af0b9857e652aa2e7e1f0af3745435007085a3e965da31824ff40eb9d2
+ b87a8c6eefcae99cea24c273b44a1705c05a28df9276dc1b2b0f96636dc9283c
+ 080085439c925ab5c3c3583357b8d009ce5d2c80e579ea5090beb1b33c36f2c0
+ 0563a23fce6ac532a4c72838081c11e17e2cd602c371908dee8f068c4a4152ed
+ 95bfeb64e7ea3c0f86e8a015176201b714e6060db1f01b4d03de83ec20b4383b
+ 729ff61df348865b58906978d67f1a5d88d3fcf3540d9df4217c2d70605ae694
+ e126c0c0e3318bdce7a5877b4392a0b502093229b320e751663db52efb580d0a
+ 34f6a4f6436d998ff682b62cbe125014cc3c945556eab3b7f13bbc44adb34eba
+ 568589d46f2c6c031912703778841202f48ad4acc061265b1d3b336457cd7c56
+ 99a6bd05cdd8d5519d683d13c056a2b71e5c249f64d8dc14182ecd6498ad63e6
+ b41b718f4355f60ce1ea2afd5b353635039a70d75767ee95293845379c8f22ec
+ 14a91ffbb43b3c7b3b6e14619adeba1118e4ac9105935ac07fd46e8362e6b01c
+ 098b5143f1cbcdaea7febdcfcc8e91260f1430fc6aff437e21abaf5c01ac621d
+ d937b3dc01211c514b3e49ba339e7748f8516d763297ca24a69c439a4f898667
+ d04f84d0d0e53b557775dad2534637f9ea976d2f9de74909fad6973e72a48d4b
+ 34f11c22063b80058c03e43e2cc9b0b3ef499a1ada09ff34e56cdc9cbec8f4a5
+"
+nocross="custom mruby build, patch welcome"
+
+post_extract() {
+	cp "${FILESDIR}/BashCompletion.cmake" "zynaddsubfx-${version}/cmake/"
+
+	# strip commit hash from directory names
+	for path in *; do
+		[ ${#path} -ge 42 ] || continue
+		[ -d "$path" ] || continue
+		mv "${path}" "${path::-41}"
+	done
+
+	# move "submodules" into place
+	mv mruby-zest-build-"${version}" mruby-zest-build
+	cd mruby-zest-build
+	for _src_dest in \
+		mruby-complex:deps \
+		mruby-dir-glob:deps \
+		mruby-glew:deps \
+		mruby-glfw3:deps \
+		mruby-io:deps \
+		mruby-nanovg:deps \
+		mruby-regexp-pcre:deps \
+		mruby-set:deps \
+		mruby-sleep:deps \
+		nanovg:deps \
+		pugl:deps \
+		rtosc:deps \
+		mruby:. \
+		mruby-qml-parse:src \
+		mruby-qml-spawn:src \
+		mruby-zest:src \
+		osc-bridge:src \
+		mgem-list:mruby/build/mrbgems \
+		mruby-pack:mruby/build/mrbgems \
+		mruby-process:mruby/build/mrbgems \
+		mruby-file-stat:mruby/build/mrbgems \
+		mruby-errno:mruby/build/mrbgems \
+		mruby-dir:mruby/build/mrbgems \
+		; do
+		_src=${_src_dest%:*}
+		_dst=${_src_dest#*:}
+		[ -d $_dst/$_src ] && rmdir $_dst/$_src
+		[ ! -e $_dst/$_src ]
+		mkdir -p $_dst
+		mv ../$_src $_dst/
+	done
+}
+
+post_build() {
+	cd ../mruby-zest-build
+	make LD=$CC all pack
+}
+
+post_install() {
+	cd ../mruby-zest-build
+	local optdir=opt/zyn-fusion
+	vmkdir ${optdir}
+	vinstall package/zest 755 ${optdir} zyn-fusion
+	for file in package/{libzest.so,font,schema}; do
+		vcopy ${file} ${optdir}
+	done
+	vmkdir ${optdir}/qml
+	touch ${DESTDIR}/${optdir}/qml/MainWindow.qml
+}
+
+zyn-fusion-data_package() {
+	short_desc+=" - data"
+	archs=noarch
+	conflicts="zynaddsubfx-data"
+	pkg_install() {
+		vmove usr/share/zynaddsubfx
+	}
+}

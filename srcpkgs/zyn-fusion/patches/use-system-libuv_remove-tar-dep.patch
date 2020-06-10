@@ -1,0 +1,33 @@
+--- mruby-zest-build/Makefile
++++ mruby-zest-build/Makefile
+@@ -15,7 +15,7 @@ all:
+ 	$(CC) -shared -o libzest.so `find mruby/build/host -type f | grep -e "\.o$$" | grep -v bin` ./deps/libnanovg.a \
+ 		./deps/libnanovg.a \
+ 		src/osc-bridge/libosc-bridge.a \
+-		./deps/$(UV_DIR)/.libs/libuv.a  -lm -lX11 -lGL -lpthread
++		-luv  -lm -lX11 -lGL -lpthread
+ 	$(CC) test-libversion.c deps/pugl/build/libpugl-0.a -ldl -o zest -lX11 -lGL -lpthread -I deps/pugl -std=gnu99
+ 
+ osx:
+@@ -170,10 +170,6 @@ pack:
+ 	echo 'Version 3.0.0-pre '       >>  package/VERSION
+ 	echo 'built on: '               >>  package/VERSION
+ 	echo `date`                     >>  package/VERSION
+-	rm -f zest-dist.tar
+-	rm -f zest-dist.tar.bz2
+-	tar cf zest-dist.tar package/
+-	bzip2 zest-dist.tar
+ 
+ pack32: ## Create 64bit Linux Package
+ 	make pack
+--- mruby-zest-build/build_config.rb
++++ mruby-zest-build/build_config.rb
+@@ -113,7 +113,7 @@ build_type.new(build_name) do |conf|
+       linker.flags_after_libraries  << "#{`pwd`.strip}/../deps/pugl/build/libpugl-0.a"
+       linker.flags_after_libraries  << "#{`pwd`.strip}/../deps/libnanovg.a"
+       if(!windows)
+-        linker.flags_after_libraries  << "#{`pwd`.strip}/../deps/libuv.a"
++        linker.flags_after_libraries  << "-luv"
+         if(ENV['OS'] != "Mac")
+           linker.libraries << 'GL'
+           linker.libraries << 'X11'

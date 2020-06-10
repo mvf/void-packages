@@ -1,7 +1,7 @@
 # Template file for 'zynaddsubfx'
 pkgname=zynaddsubfx
 version=3.0.5
-revision=2
+revision=3
 build_style=cmake
 build_helper=qemu
 configure_args="-DDefaultOutput=jack -DDefaultInput=jack -DGuiModule=fltk"
@@ -9,6 +9,7 @@ hostmakedepends="doxygen fltk pkg-config"
 makedepends="fltk-devel fftw-devel liblo-devel libXpm-devel mxml-devel
  jack-devel portaudio-devel"
 depends="zynaddsubfx-data>=0"
+conflicts="zyn-fusion"
 short_desc="Open Source software synthesizer"
 maintainer="Jürgen Buchmüller <pullmoll@t-online.de>"
 license="GPL-2"
@@ -58,6 +59,7 @@ post_install() {
 zynaddsubfx-data_package() {
 	short_desc+=" - data"
 	archs=noarch
+	conflicts="zyn-fusion-data"
 	pkg_install() {
 		vmove usr/share/${sourcepkg}
 	}
