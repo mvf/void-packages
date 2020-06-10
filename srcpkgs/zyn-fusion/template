@@ -1,0 +1,127 @@
+# Template file for 'zyn-fusion'
+pkgname=zyn-fusion
+version=3.0.5
+revision=1
+#archs="i686 x86_64"
+#wrksrc="zynaddsubfx-${version}"
+create_wrksrc=yes
+build_style=cmake
+build_wrksrc="zynaddsubfx-${version}"
+configure_args=" -DGuiModule=zest"
+#make_build_args=""
+#make_install_args=""
+#conf_files=""
+#make_dirs="/var/log/dir 0755 root root"
+hostmakedepends="cmake pkg-config python ruby wget tar automake libtool git bison"
+makedepends="MesaLib-devel alsa-lib-devel fftw-devel jack-devel mxml-devel liblo-devel libuv-devel portaudio-devel zlib-devel"
+depends=""
+short_desc="ZynAddSubFX with a new interactive UI"
+maintainer="Matthias von Faber <mvf@gmx.eu>"
+# FIXME: check license
+license="GPL-2.0-or-later"
+homepage="https://zynaddsubfx.sourceforge.io/zyn-fusion.html"
+distfiles="
+ ${SOURCEFORGE_SITE}/zynaddsubfx/zynaddsubfx/${version}/zynaddsubfx-${version}.tar.bz2
+ https://github.com/mruby-zest/mruby-zest-build/archive/${version}.tar.gz
+ https://github.com/pbosetti/mruby-complex/archive/4f57a1ef9f968e9d5eef53667c7960a2e98c9750.tar.gz
+ https://github.com/iij/mruby-dir/archive/89dceefa1250fb1ae868d4cb52498e9e24293cd1.tar.gz
+ https://github.com/gromnitsky/mruby-dir-glob/archive/334c040a2e2c4c2689f8c3440168011f64d57ada.tar.gz
+ https://github.com/iij/mruby-errno/archive/b4415207ff6ea62360619c89a1cff83259dc4db0.tar.gz
+ https://github.com/ksss/mruby-file-stat/archive/aa474589f065c71d9e39ab8ba976f3bea6f9aac2.tar.gz
+ https://github.com/IceDragon200/mruby-glew/archive/6849202f885516b381406e799dcdb430065e19cf.tar.gz
+ https://github.com/IceDragon200/mruby-glfw3/archive/0eeee012fd4bbd6544dd34f17ce2b476ad71d86b.tar.gz
+ https://github.com/iij/mruby-io/archive/1c4428880b2f0f0fcd81ea2debc5f4459a7ed53c.tar.gz
+ https://github.com/mruby-zest/mruby-nanovg/archive/d7d4e1ce434131babb5fd6026201011f5b0b50ea.tar.gz
+ https://github.com/iij/mruby-process/archive/fe171fbe2a6cc3c2cf7d713641bddde71024f7c8.tar.gz
+ https://github.com/iij/mruby-regexp-pcre/archive/a961225c0953dd2bd987111f0836821573616de2.tar.gz
+ https://github.com/yui-knk/mruby-set/archive/68334311ac7386eef84f3034a256e7135a87625d.tar.gz
+ https://github.com/matsumoto-r/mruby-sleep/archive/263d70351a4f75a875f2a35ab9a9128d1ef5da90.tar.gz
+ https://github.com/memononen/nanovg/archive/b83cf926525e7cea8d2483da2a75852b8c7b6d28.tar.gz
+ https://github.com/mruby-zest/pugl/archive/d87062625ed652df9455bd6f60ea89c53515c43a.tar.gz
+ https://github.com/fundamental/rtosc/archive/6a65b24469068a8f334567b72a3125bd1d7fd1b1.tar.gz
+ https://github.com/mruby/mruby/archive/7e229c470ae7aa2187b0fe9d3b66ac20943cd2b8.tar.gz
+ https://github.com/mruby-zest/mruby-qml-parse/archive/3e2c32cc55c60027e6406eca89bf1ae5301aa16b.tar.gz
+ https://github.com/mruby-zest/mruby-qml-spawn/archive/ff5a0417bb37c72967e1c551c9f39c2e47a2b503.tar.gz
+ https://github.com/mruby-zest/mruby-zest/archive/586ef1a92b9805b204365c80f80494904959b5ae.tar.gz
+ https://github.com/mruby-zest/osc-bridge/archive/2816cacae0346ba363080b4a352037a06088889c.tar.gz
+"
+checksum="
+ 7447322268114a1e0ac5f281ac37a09a78e761a7be61999caf79100049789f63
+ 9ec2192f0550f8e4d6cc19783f359835ac1f5b1dcdf62a95171f80faa6c60d2a
+ 9805de49dc094e5a6bf98745af9626c258063ae81cc34f13fdd05fa3b208dc0c
+ 34f11c22063b80058c03e43e2cc9b0b3ef499a1ada09ff34e56cdc9cbec8f4a5
+ c9d1a1a2f0e14d7733ddc73c6af5da8e658a0cfa1567cab6f0b2b0af207e70c7
+ d04f84d0d0e53b557775dad2534637f9ea976d2f9de74909fad6973e72a48d4b
+ c362ca65e4b808cc6a8b70955a29f7242b21bd502e4df5d7e3f76be771e04c17
+ 9a732b7c6eac1caa957b0f3d2f738ddfcbcb32493e1bc81115e8614d2176bdf7
+ 5b7b7d71bac0db682f51d814a391650ca4286890a1161853bd6b74b1622426bd
+ 7148ca0f72307379991c2f69c931d0c43a67f1171ba1a43cecaf4d84a03ab7e4
+ e2cc83de43aee95890b9f4093a7ad8220cc7978ddc3ade2ed5cfd0d9a0b8d3c1
+ bca1d98d791e328d1e68a9890c343669eedf2776f84fff730b0eaa1fb1db02fd
+ 8839e3b6b84d67dcc30172aab52686e009178a3d21bcbd6c64e54840e67c4d64
+ 5c8419af0b9857e652aa2e7e1f0af3745435007085a3e965da31824ff40eb9d2
+ b87a8c6eefcae99cea24c273b44a1705c05a28df9276dc1b2b0f96636dc9283c
+ 080085439c925ab5c3c3583357b8d009ce5d2c80e579ea5090beb1b33c36f2c0
+ 0563a23fce6ac532a4c72838081c11e17e2cd602c371908dee8f068c4a4152ed
+ 87a6301f74e566ea1ec869c2fac4bd1769e2f05295eb88cac8f763b4fe0e6aa0
+ 74b9cd1d84a97aebfb8dbf5eed575271afaca6e73c9b70a2670c6e1d4fb85365
+ 2c9667eedd6de7777198fd50ea744ada7f2d44dcec240aa402fad03570f739a2
+ 38b42d54262857a7021ba96eb28fa3224a5f9aad54b387cf120a372b66956f1f
+ 10611674dfd01a82a0b60592adb431cc9699b64996f99f62ae28b8342b5eb44b
+ d84d162093f3ddcbaff62f8b4c059e5019b7c88275f21eb99ee63a27cca9a6d0
+"
+
+post_extract() {
+	# strip commit hash from directory names
+	for path in *; do
+		[ ${#path} -ge 42 ] || continue
+		[ -d "$path" ] || continue
+		mv "${path}" "${path::-41}"
+	done
+
+	# move "submodules" into place
+	mv mruby-zest-build-"${version}" mruby-zest-build
+	pushd mruby-zest-build
+	for _src_dest in \
+		mruby-complex:deps \
+		mruby-dir:deps \
+		mruby-dir-glob:deps \
+		mruby-errno:deps \
+		mruby-file-stat:deps \
+		mruby-glew:deps \
+		mruby-glfw3:deps \
+		mruby-io:deps \
+		mruby-nanovg:deps \
+		mruby-process:deps \
+		mruby-regexp-pcre:deps \
+		mruby-set:deps \
+		mruby-sleep:deps \
+		nanovg:deps \
+		pugl:deps \
+		rtosc:deps \
+		mruby:. \
+		mruby-qml-parse:src \
+		mruby-qml-spawn:src \
+		mruby-zest:src \
+		osc-bridge:src \
+		; do
+		_src=${_src_dest%:*}
+		_dst=${_src_dest#*:}
+		[ -d $_dst/$_src ] && rmdir $_dst/$_src
+		[ ! -e $_dst/$_src ] 
+		mv ../$_src $_dst/
+	done
+	popd
+	cp "${FILESDIR}/BashCompletion.cmake" "zynaddsubfx-${version}/cmake/"
+}
+
+post_build() {
+	cd ../mruby-zest-build
+	export BUILD_LD=$CXX_FOR_BUILD
+	export LD_FOR_BUILD=$CXX_FOR_BUILD
+	export LD=$CXX_FOR_BUILD
+	make setup
+	make builddep
+	make
+	make pack
+}
