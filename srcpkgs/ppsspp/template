@@ -1,7 +1,8 @@
 # Template file for 'ppsspp'
 pkgname=ppsspp
 version=1.11.3
-revision=1
+revision=2
+ffmpeg_commit=55147e5f33f5ae4904f75ec082af809267122b94
 _lang_commit=6bd5b4bc983917ea8402f73c726b46e36f3de0b4
 _glslang_commit=d0850f875ec392a130ccf00018dab458b546f27c
 _SPIRV_Cross_commit=a1f7c8dc8ea2f94443951ee27003bffa562c1f13
@@ -9,10 +10,10 @@ _armips_commit=7885552b208493a6a0f21663770c446c3ba65576
 _discord_rpc_commit=3d3ae7129d17643bc706da0a2eea85aafd10ab3a
 _miniupnp_commit=7e229ddd635933239583ab190d9b614bde018157
 build_style=cmake
-configure_args="-DHEADLESS=1 -DUSE_SYSTEM_FFMPEG=1 -DUNITTEST=ON
+configure_args="-DHEADLESS=1 -DUNITTEST=ON
  -DUSING_QT_UI=$(vopt_if qt ON OFF)"
 hostmakedepends="pkg-config python3 $(vopt_if qt qt5-host-tools)"
-makedepends="zlib-devel glew-devel ffmpeg-devel libzip-devel
+makedepends="zlib-devel glew-devel libzip-devel
  snappy-devel rapidjson libpng-devel
  $(vopt_if sdl2 SDL2-devel) $(vopt_if wayland wayland-devel)
  $(vopt_if qt 'qt5-devel qt5-multimedia-devel')"
@@ -23,6 +24,7 @@ license="GPL-2.0-or-later"
 homepage="https://www.ppsspp.org/"
 distfiles="
  https://github.com/hrydgard/ppsspp/archive/v${version}.tar.gz
+ https://github.com/hrydgard/ppsspp-ffmpeg/archive/${ffmpeg_commit}.tar.gz
  https://github.com/hrydgard/ppsspp-lang/archive/${_lang_commit}.tar.gz
  https://github.com/hrydgard/glslang/archive/${_glslang_commit}.tar.gz
  https://github.com/KhronosGroup/SPIRV-Cross/archive/${_SPIRV_Cross_commit}.tar.gz
@@ -30,6 +32,7 @@ distfiles="
  https://github.com/discordapp/discord-rpc/archive/${_discord_rpc_commit}.tar.gz
  https://github.com/hrydgard/miniupnp/archive/${_miniupnp_commit}.tar.gz"
 checksum="503f046fa68e4be24d08822b0aa2280e653ad513d9a12c77a59809467b95c516
+ 3d388db9c9fd228c8206bfa6aadfcb790ce76295b631081c3041ef91346b7c6a
  b6e9fe4a7daa2dd8d4f3cc74cbafc5382f7df90303af3a3c18d25ec4492d8899
  699e177e0022f17c204e3542bbf7fcb6843923095968edc1ebbc5124e85a2bdf
  456b1e2a75a8e82985ce22f4707570c7aa1fc50d4119cba1a641e8b233ecde26
@@ -50,6 +53,8 @@ build_options="wayland qt sdl2"
 build_options_default="sdl2"
 
 post_extract() {
+	rmdir -v ${wrksrc}/ffmpeg
+	mv ${wrksrc}/ppsspp-ffmpeg-${ffmpeg_commit}/* ${wrksrc}/ffmpeg
 	rmdir -v ${wrksrc}/assets/lang
 	mv ${wrksrc}/../ppsspp-lang-${_lang_commit} ${wrksrc}/assets/lang
 	rmdir -v ${wrksrc}/ext/armips
