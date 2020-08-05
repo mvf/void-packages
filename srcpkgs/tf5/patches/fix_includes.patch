@@ -1,0 +1,22 @@
+--- src/malloc.c
++++ src/malloc.c
+@@ -12,6 +12,8 @@ static const char RCSid[] = "$Id: malloc.c,v 35004.22 2007/01/13 23:12:39 kkeys
+ #include "signals.h"
+ #include "malloc.h"
+ 
++#include <sys/types.h>
++
+ caddr_t mmalloc_base = NULL;
+ int low_memory_warning = 0;
+ static char *reserve = NULL;
+--- src/pattern.h
++++ src/pattern.h
+@@ -10,7 +10,7 @@
+ #ifndef PATTERN_H
+ #define PATTERN_H
+ 
+-#include "pcre-2.08/pcre.h"
++#include <pcre.h>
+ 
+ typedef struct RegInfo {
+     pcre *re;

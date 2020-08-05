@@ -1,0 +1,28 @@
+# Template file for 'tf5'
+pkgname=tf5
+version=50b8
+revision=1
+#archs="i686 x86_64"
+wrksrc="tf-50b8"
+#create_wrksrc=yes
+build_style=gnu-configure
+#configure_args=""
+#make_build_args=""
+#make_install_args=""
+#conf_files=""
+#make_dirs="/var/log/dir 0755 root root"
+hostmakedepends=""
+makedepends="libressl-devel ncurses-libtinfo-devel pcre-devel"
+depends=""
+short_desc="Text-based MU* and chatserver client"
+maintainer="Matthias von Faber <mvf@gmx.eu>"
+license="GPL-3.0-or-later"
+homepage="http://tinyfugue.sourceforge.net/"
+distfiles="${SOURCEFORGE_SITE}/tinyfugue/tinyfugue/5.0%20beta%208/tf-50b8.tar.gz"
+checksum=3750a114cf947b1e3d71cecbe258cb830c39f3186c369e368d4662de9c50d989
+
+do_install() {
+	vbin src/tf
+	vmkdir usr/share/tf-lib
+	vcopy tf-lib/* usr/share/tf-lib
+}
