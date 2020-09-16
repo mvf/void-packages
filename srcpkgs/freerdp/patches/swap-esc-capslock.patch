@@ -1,0 +1,19 @@
+--- a/libfreerdp/locale/keyboard_xkbfile.c
++++ b/libfreerdp/locale/keyboard_xkbfile.c
+@@ -105,14 +105,14 @@ static const XKB_KEY_NAME_SCANCODE XKB_KEY_NAME_SCANCODE_TABLE[] = {
+ 	{ "BKSL", RDP_SCANCODE_OEM_5 },     // evdev 51
+ 	{ "BKSP", RDP_SCANCODE_BACKSPACE }, // evdev 22
+ 	// { "BRK",  RDP_SCANCODE_ },	// evdev 419
+-	{ "CAPS", RDP_SCANCODE_CAPSLOCK }, // evdev 66
++	{ "CAPS", RDP_SCANCODE_ESCAPE }, // evdev 66
+ 	{ "COMP", RDP_SCANCODE_APPS },     // evdev 135
+ 	// { "COPY", RDP_SCANCODE_ },	// evdev 141
+ 	// { "CUT",  RDP_SCANCODE_ },	// evdev 145
+ 	{ "DELE", RDP_SCANCODE_DELETE }, // evdev 119
+ 	{ "DOWN", RDP_SCANCODE_DOWN },   // evdev 116
+ 	{ "END", RDP_SCANCODE_END },     // evdev 115
+-	{ "ESC", RDP_SCANCODE_ESCAPE },  // evdev 9
++	{ "ESC", RDP_SCANCODE_CAPSLOCK },  // evdev 9
+ 	// { "FIND", RDP_SCANCODE_ },	// evdev 144
+ 	{ "FK01", RDP_SCANCODE_F1 },  // evdev 67
+ 	{ "FK02", RDP_SCANCODE_F2 },  // evdev 68
