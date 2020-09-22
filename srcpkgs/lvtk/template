@@ -1,0 +1,25 @@
+# Template file for 'lvtk'
+pkgname=lvtk
+version=1.2.0
+revision=1
+build_style=waf
+hostmakedepends="pkg-config"
+makedepends="boost-devel gtkmm2-devel lv2"
+depends=""
+short_desc="LV2 C++ Toolkit"
+maintainer="Matthias von Faber <mvf@gmx.eu>"
+license="ISC"
+homepage="https://lvtk.org"
+distfiles="https://github.com/lvtk/lvtk/archive/${version}.tar.gz"
+checksum=4dda4c26a16fc3f216ff77f5bb308f05667640e54fc80f0ae4984e869990cb0e
+
+lvtk-devel_package() {
+	short_desc+=" - development files"
+	pkg_install() {
+		vmove usr/bin
+		vmove usr/include
+		vmove usr/lib/pkgconfig
+		vmove "usr/lib/*.a"
+	}
+}
+
