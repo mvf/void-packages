@@ -1,0 +1,22 @@
+# Template file for 'beatslash-lv2'
+pkgname=beatslash-lv2
+version=1.0.6
+revision=1
+#archs="i686 x86_64"
+#wrksrc=
+#create_wrksrc=yes
+build_style=waf
+#configure_args=""
+#make_build_args=""
+#make_install_args=""
+#conf_files=""
+#make_dirs="/var/log/dir 0755 root root"
+hostmakedepends="pkg-config"
+makedepends="gtkmm2-devel lv2 lvtk-devel"
+depends=""
+short_desc="Beat Repeater and Beat Slicer LV2 plugins"
+maintainer="Matthias von Faber <mvf@gmx.eu>"
+license="GPL-3.0-or-later"
+homepage="https://github.com/blablack/beatslash-lv2"
+distfiles="https://github.com/blablack/${pkgname}/archive/v${version}.tar.gz"
+checksum=965e8a53d25c1b22c0db28740ad9d0f8a29f6cf73f6589f96ceceaebbc542cb1
