@@ -1,0 +1,11 @@
+# Template file for 'robin-map'
+pkgname=robin-map
+version=0.6.3
+revision=1
+build_style=cmake
+short_desc="C++ implementation of a fast hash map and hash set using robin hood hashing"
+maintainer="Matthias von Faber <mvf@gmx.eu>"
+license="MIT"
+homepage="https://github.com/Tessil/robin-map"
+distfiles="${homepage}/archive/v${version}.tar.gz"
+checksum=e6654c8c2598f63eb0b1d52ff8bdf39cfcc91d81dd5d05274a6dca91241cd72f
