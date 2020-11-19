@@ -1,10 +1,10 @@
 # Template file for 'mozc'
 pkgname=mozc
-version=2.23.2815.102
-revision=9
+version=2.25.4150.102
+revision=1
 create_wrksrc=yes
 build_wrksrc=mozc/src
-hostmakedepends="gettext ninja pkg-config protobuf protobuf-devel python which"
+hostmakedepends="gettext ninja pkg-config protobuf protobuf-devel python3-six which"
 makedepends="gtk+-devel ibus-devel libzinnia-devel protobuf-devel qt5-devel
  fcitx-devel"
 depends="tegaki-zinnia-japanese>=0.3"
@@ -13,13 +13,15 @@ maintainer="Matthias von Faber <mvf@gmx.eu>"
 license="BSD-3-Clause"
 homepage="https://github.com/google/mozc"
 distfiles="
- https://gitlab.com/fcitx/mozc/repository/dad94584ea5012110ad1d204e433964243a1639d/archive.tar.bz2>${pkgname}-${version}.tar.bz2
- https://github.com/bnoordhuis/gyp/archive/c6f471687407bf28ddfc63f1a8f47aeb7bf54edc.tar.gz
+ https://github.com/fcitx/mozc/archive/a714b5066377678586a28cac69a2d8c7f9118aa8.tar.gz>${pkgname}-${version}.tar.gz
+ https://github.com/abseil/abseil-cpp/archive/c51510d1d87ebce8615ae1752fd5aca912f6cf4c.tar.gz
+ https://github.com/chromium/gyp/archive/caa60026e223fc501e8b337fd5086ece4028b1c6.tar.gz
  https://github.com/hiroyuki-komatsu/japanese-usage-dictionary/archive/e5b3425575734c323e1d947009dd74709437b684.tar.gz
 "
 checksum="
- e38457e63a7fa8d62d87b4f8b3e89fe5f6939d92e3c4fd287a93358375693892
- 882f074cbb3a4f2bba550fb615e63949c0fbf39eeb1718a0330b4a545ab97616
+ 84a270d689e9f33a65c79c91bb2b38bde05337834e3739df9423b4cdbffb6c09
+ 84c9f1312d36546e07b8135143319f0f63f577ca4719286e9e0a0986bfc1b898
+ 9b443c57ab4166fd09844ce7d91d1e3d0b4c7051285d6640a6f4fd0fa8d936f4
  0b6efee0eebac2c1a8eeea333278aa40fcef7846bba9a379962c6e567e7e3dc1
 "
 
@@ -39,7 +41,7 @@ post_extract() {
 	rm -rf mozc/src/unix/fcitx5
 
 	# symlink "submodules" into place
-	for _src_dest in gyp japanese-usage-dictionary:japanese_usage_dictionary; do
+	for _src_dest in abseil-cpp gyp japanese-usage-dictionary:japanese_usage_dictionary; do
 		_src=${_src_dest%:*}
 		_dst=mozc/src/third_party/${_src_dest#*:}
 		rmdir $_dst
@@ -48,19 +50,19 @@ post_extract() {
 
 	if [ "$CROSS_BUILD" ]; then
 		# find fcitx4-config
-		sed -i -e "s;fcitx4-config;${XBPS_CROSS_BASE}/usr/bin/fcitx4-config;" mozc/src/unix/fcitx/fcitx.gyp
+		vsed -i -e "s;fcitx4-config;${XBPS_CROSS_BASE}/usr/bin/fcitx4-config;" mozc/src/unix/fcitx/fcitx.gyp
 	fi
 }
 
 do_configure() {
 	case "$XBPS_TARGET_MACHINE" in
-		*-musl) sed -i -e 's|PTHREAD_MUTEX_RECURSIVE_NP|PTHREAD_MUTEX_RECURSIVE|g' base/mutex.cc ;;
+		*-musl) vsed -i -e 's|PTHREAD_MUTEX_RECURSIVE_NP|PTHREAD_MUTEX_RECURSIVE|g' base/mutex.cc ;;
 	esac
 	GYP_DEFINES="
 	 document_dir=/usr/share/licenses/${pkgname}
 	 use_libprotobuf=1
 	 use_libzinnia=1
-	" python2 build_mozc.py gyp --target_platform=Linux
+	" python3 build_mozc.py gyp --target_platform=Linux
 }
 
 do_build() {
@@ -73,9 +75,9 @@ do_build() {
 	 renderer/renderer.gyp:mozc_renderer
 	 unix/fcitx/fcitx.gyp:fcitx-mozc
 	"
-	python2 build_mozc.py build -c Release $targets
+	python3 build_mozc.py build -c Release $targets
 
-	sed -i 's|/usr/libexec/|/usr/lib/ibus-mozc/|g' out_linux/Release/gen/unix/ibus/mozc.xml
+	vsed -i 's|/usr/libexec/|/usr/lib/ibus-mozc/|g' out_linux/Release/gen/unix/ibus/mozc.xml
 }
 
 do_install() {

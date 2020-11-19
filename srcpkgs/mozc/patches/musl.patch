@@ -1,0 +1,11 @@
+--- mozc/src/unix/fcitx/surrounding_text_util.h
++++ mozc/src/unix/fcitx/surrounding_text_util.h
+@@ -35,6 +35,8 @@
+ 
+ #include "base/port.h"
+ 
++#include <sys/types.h>
++
+ namespace mozc {
+ namespace fcitx {
+ 
