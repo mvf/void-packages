@@ -1,25 +1,68 @@
 # Template file for 'qtractor'
 pkgname=qtractor
-version=0.9.14
+version=0.9.19
 revision=1
 wrksrc="qtractor-qtractor_${version//./_}"
+create_wrksrc=yes
+build_wrksrc="$wrksrc"
 build_style=gnu-configure
-configure_args="--enable-debug"
+configure_args="--enable-debug $(vopt_if vst3 --with-vst3=vst3sdk)"
 hostmakedepends="automake pkg-config"
-makedepends="dssi-devel jack-devel ladspa-sdk liblo-devel libmad-devel
- libsamplerate-devel lilv-devel qt5-tools-devel qt5-x11extras-devel
- rubberband-devel sratom-devel suil-devel vamp-plugin-sdk-devel"
+makedepends="aubio-devel dssi-devel jack-devel ladspa-sdk liblo-devel
+ libmad-devel libsamplerate-devel libsndfile-devel libvorbis-devel lilv-devel
+ qt5-tools-devel qt5-x11extras-devel rubberband-devel sratom-devel suil-devel "
 depends="desktop-file-utils dssi hicolor-icon-theme jack lv2"
-short_desc="Audio/MIDI multi-track sequencer application written in C++/Qt"
-maintainer="Orphaned <orphan@voidlinux.org>"
+short_desc="Audio/MIDI multi-track sequencer written in C++/Qt"
+maintainer="Matthias von Faber <mvf@gmx.eu>"
 license="GPL-2.0-or-later"
 homepage="http://qtractor.org"
 changelog="https://raw.githubusercontent.com/rncbc/qtractor/master/ChangeLog"
 distfiles="https://github.com/rncbc/qtractor/archive/qtractor_${version//./_}.tar.gz"
-checksum=16795d130ab4e79e76cd535251ff3d5f827731c628b9aee658c2c48e6f326e4d
+checksum=f76bd709abf18d4141b45d4f9d251d61861fc0f982c84061b21778c49bbac216
 
-# configure fails to find qt5 headers
-nocross="https://build.voidlinux.org/builders/armv7l-musl_builder/builds/3458/steps/shell_3/logs/stdio"
+build_options="vst3"
+desc_option_vst3="Enable VST3 plugin support"
+case "$XBPS_TARGET_MACHINE" in
+	i686|x86_64) build_options_default="vst3" ;;
+esac
+
+if [ "$CROSS_BUILD" ]; then
+	hostmakedepends+=" qt5-host-tools qt5-qmake"
+fi
+
+if [ "$build_option_vst3" ]; then
+	_vst3sdk_tag=vstsdk370_31_07_2020_build_116
+	_vst3base_sha=4084590483840030cc38c6a64e03b728d12c8f0c
+	_vst3pluginterfaces_sha=f8fffad79b632968c3bd0f8ae17eafabff140bee
+	_vst3publicsdk_sha=a395ed998bfee1969d623c15a5825160de7fd32c
+	distfiles+="
+	  https://github.com/steinbergmedia/vst3sdk/archive/$_vst3sdk_tag.tar.gz
+	  https://github.com/steinbergmedia/vst3_base/archive/$_vst3base_sha.tar.gz
+	  https://github.com/steinbergmedia/vst3_pluginterfaces/archive/$_vst3pluginterfaces_sha.tar.gz
+	  https://github.com/steinbergmedia/vst3_public_sdk/archive/$_vst3publicsdk_sha.tar.gz
+	"
+	checksum+="
+	  3b119e0df2911ec61f80002f13d37733e85635f71e42519640fb498f7a0c2ddf
+	  cbeec7f515961c60209aea5865721633029df439cf3473ce09943424918c9e42
+	  516a67fb39159b1ab76636c4c7029aaec8d2e2d74d6562ef43a9aac8a311de80
+	  cd4552e9ee56b83fe047bcb341e75e591eecd7fdcc740ef616ae8c9d3e00c0b6
+	"
+
+	post_extract() {
+		cd $build_wrksrc/src
+		ln -sr $wrksrc/vst3sdk-$_vst3sdk_tag vst3sdk
+		for src_dest in \
+		  vst3_base-$_vst3base_sha:vst3sdk/base \
+		  vst3_pluginterfaces-$_vst3pluginterfaces_sha:vst3sdk/pluginterfaces \
+		  vst3_public_sdk-$_vst3publicsdk_sha:vst3sdk/public.sdk \
+		; do
+			_src=${src_dest%:*}
+			_dst=${src_dest#*:}
+			rmdir $_dst
+			ln -sr $wrksrc/$_src $_dst
+		done
+	}
+fi
 
 pre_configure() {
 	autoreconf -if
