@@ -1,6 +1,6 @@
 # Template file for 'mozc'
 pkgname=mozc
-version=2.25.4190.102
+version=2.26.4248.100
 revision=1
 create_wrksrc=yes
 build_wrksrc=mozc/src
@@ -13,13 +13,13 @@ maintainer="Matthias von Faber <mvf@gmx.eu>"
 license="BSD-3-Clause"
 homepage="https://github.com/google/mozc"
 distfiles="
- https://github.com/fcitx/mozc/archive/11c5bb231f81ce880373f24fa8dabd0245607294.tar.gz>${pkgname}-${version}.tar.gz
+ https://github.com/fcitx/mozc/archive/b34437de435ef1ca30ace834d82a9a99a0d645da.tar.gz>${pkgname}-${version}.tar.gz
  https://github.com/abseil/abseil-cpp/archive/0f3bb466b868b523cf1dc9b2aaaed65c77b28862.tar.gz
  https://github.com/chromium/gyp/archive/caa60026e223fc501e8b337fd5086ece4028b1c6.tar.gz
  https://github.com/hiroyuki-komatsu/japanese-usage-dictionary/archive/e5b3425575734c323e1d947009dd74709437b684.tar.gz
 "
 checksum="
- b500c196afa8ceb10ec45fddd65d4623fc504b49d910c6d4bbb291a808538996
+ 93ab29bc44ad4ffcf6f0c22a2267d62dbb6710950214e764e8503729c421b46d
  3d74cdc98b42fd4257d91f652575206de195e2c824fcd8d6e6d227f85cb143ef
  9b443c57ab4166fd09844ce7d91d1e3d0b4c7051285d6640a6f4fd0fa8d936f4
  0b6efee0eebac2c1a8eeea333278aa40fcef7846bba9a379962c6e567e7e3dc1
