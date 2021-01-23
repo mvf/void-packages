@@ -1,0 +1,105 @@
+# Template file for 'surge-synthesizer'
+pkgname=surge-synthesizer
+version=1.8.1
+revision=1
+archs="i686 x86_64"
+create_wrksrc=yes
+build_wrksrc=surge-release_${version}
+build_style=cmake
+configure_args="-GNinja -DBUILD_SURGE_JUCE_PLUGINS=ON"
+make_cmd=ninja
+make_build_target="$(vopt_if lv2 Surge-LV2-Packaged) Surge-VST3-Packaged Surge-Effects-Bank-Packaged"
+hostmakedepends="ninja pkg-config"
+makedepends="
+ alsa-lib-devel
+ cairo-devel
+ fontconfig-devel
+ freetype-devel
+ jack-devel
+ libX11-devel
+ libXcursor-devel
+ libXinerama-devel
+ libXrandr-devel
+ libxcb-devel
+ libxkbcommon-devel
+ $(vopt_if lv2 lv2)
+ xcb-util-cursor-devel
+ xcb-util-keysyms-devel
+"
+depends="zenity"
+short_desc="Hybrid Synthesizer ($(vopt_if lv2 'LV2, ')VST3)"
+maintainer="Matthias von Faber <mvf@gmx.eu>"
+license="GPL-3.0-only"
+homepage="https://surge-synthesizer.github.io/"
+_juce_version=6.0.4
+distfiles="
+ https://github.com/surge-synthesizer/surge/archive/release_${version}.tar.gz
+ https://github.com/surge-synthesizer/surge-extra-content/archive/a4265856ae98f34a5b4e38ce8f36d29b646f56ec.tar.gz
+ https://github.com/surge-synthesizer/vstgui/archive/8abd688c76edfb7215413080960649a532a6755c.tar.gz
+ https://github.com/surge-synthesizer/vst3sdk/archive/10287bc37bbb34324b8097369e2ec4eb73a51d65.tar.gz
+ https://github.com/steinbergmedia/vst3_base/archive/37dbdb6ff7af29e518877f57f14050594164a0d6.tar.gz
+ https://github.com/steinbergmedia/vst3_pluginterfaces/archive/6c6bb30d18c3d5a553e55aa74afc5d146571be0a.tar.gz
+ https://github.com/steinbergmedia/vst3_public_sdk/archive/ced72c00d5c1365a4cca16cdbfb871be2496848b.tar.gz
+ https://github.com/craigsapp/midifile/archive/41e450bcd5ba1c0419f69664944434b0abf9d7ba.tar.gz
+ https://github.com/surge-synthesizer/tuning-library/archive/0ba372f71b4c36cd807d39b12603f1be702bb2fe.tar.gz
+ https://github.com/memononen/nanosvg/archive/bfb17e280dce5e58bb0fad516e329ca97ff13478.tar.gz
+ https://github.com/juce-framework/JUCE/archive/${_juce_version}.tar.gz
+"
+checksum="
+ 3b97cc674142a68297903f70328dbb41cc168ba12867291713f5fcf7fb8ad0a8
+ 21fd1edd3d4959339e6440d8e59ea84f426ebc3d32b5d4799076ab4dc44ae6e8
+ 37f0319469a657d7bc620a2e153b37f940f289216952150dab9de64ddf2a4f23
+ b1eb4d7a5fc714ebb058c77bf7250254ee310a6ffd2b77ef702a12ab4bf9ec10
+ 1826460d36c2c6a461d29b1b8db9a142c5a621038d15e24812c46343a26dee7a
+ 67f97965c5080e8031192504d90df43b3225b71abf678283569b1f30d2ece3f3
+ 38f589ce1a430cc3d93671e28337968b6d8998eda83216943b5546136edd3e47
+ 6723c1be730dd73ba1c2903e59a044d26b702c07bec6f567d86f1ee77ab8607e
+ c16bcd2d47beb59216e6708d0efe68a18a0c2fd2f51ae4e5ea3245f1126757d8
+ 9754f6825d3cf1d78b98408faaacc7b3ee8ab11cd016818485f5bb71390f742d
+ 56d7fd8e8711c856be974dd3f8c46cd54adc353d9ab58bca69f14352c7081049
+"
+lib32disabled=yes
+build_options="lv2"
+desc_option_lv2="Enable experimental LV2 plugin"
+
+post_extract() {
+	local src_dst src dst
+	cd $build_wrksrc
+	for src_dst in \
+	 vstgui-8abd688c76edfb7215413080960649a532a6755c:vstgui.surge \
+	 vst3sdk-10287bc37bbb34324b8097369e2ec4eb73a51d65:vst3sdk \
+	 vst3_base-37dbdb6ff7af29e518877f57f14050594164a0d6:vst3sdk/base \
+	 vst3_pluginterfaces-6c6bb30d18c3d5a553e55aa74afc5d146571be0a:vst3sdk/pluginterfaces \
+	 vst3_public_sdk-ced72c00d5c1365a4cca16cdbfb871be2496848b:vst3sdk/public.sdk \
+	 midifile-41e450bcd5ba1c0419f69664944434b0abf9d7ba:libs/midifile \
+	 tuning-library-0ba372f71b4c36cd807d39b12603f1be702bb2fe:libs/tuning-library \
+	 nanosvg-bfb17e280dce5e58bb0fad516e329ca97ff13478:libs/nanosvg \
+	 JUCE-${_juce_version}:libs/juce-${_juce_version}/juce \
+	; do
+		src=${src_dst%:*}
+		dst=${src_dst#*:}
+		mkdir -p ${dst%/*}
+		[ -d $dst ] && rmdir $dst
+		ln -sr ../$src $dst
+	done
+}
+
+post_patch() {
+	vsed -i -e '/code-quality-pipeline-checks/d' -e '/BUILD_HEADLESS true/d' CMakeLists.txt
+	vsed -i 's/set( SURGE_FULL_VERSION .*/set(SURGE_FULL_VERSION "'${version}'")/' cmake/versiontools.cmake
+	vsed -i 's/\b__sigemptyset\b/sigemptyset/g' libs/juce-${_juce_version}/juce/modules/juce_audio_formats/codecs/flac/libFLAC/cpu.c
+}
+
+do_install() {
+	vmkdir usr/share/surge
+	vcopy resources/data/* usr/share/surge
+	vcopy ../surge-extra-content-a4265856ae98f34a5b4e38ce8f36d29b646f56ec/Skins/* usr/share/surge/skins/
+	if [ "$(vopt_if lv2)" ]; then
+		vmkdir usr/lib/lv2
+		vcopy build/surge_products/Surge.lv2 usr/lib/lv2/
+	fi
+	vmkdir usr/lib/vst3
+	vcopy build/surge_products/Surge.vst3 usr/lib/vst3/
+	vcopy build/surge_products/SurgeEffectsBank.vst3 usr/lib/vst3/
+	vdoc README.md
+}
