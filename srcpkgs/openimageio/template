@@ -1,22 +1,22 @@
 # Template file for 'openimageio'
 pkgname=openimageio
-version=1.8.17
-revision=3
+version=2.2.11.1
+revision=1
 wrksrc="oiio-Release-${version}"
 build_style=cmake
-configure_args="-DUSE_OPENGL=0 -DUSE_QT=0 -DUSE_PYTHON=0 -DOIIO_BUILD_TESTS=0
- -DSTOP_ON_WARNING=0 -DUSE_STD_REGEX_EXITCODE=0"
+configure_args="-DBUILD_MISSING_FMT=0 -DOIIO_BUILD_TESTS=0 -DOIIO_BUILD_TOOLS=0
+ -DSTOP_ON_WARNING=0 -DUSE_OPENGL=0 -DUSE_PYTHON=0 -DUSE_QT=0"
 hostmakedepends="pkg-config"
-makedepends="boost-devel giflib-devel libraw-devel libopenjpeg-devel libwebp-devel
- libjpeg-turbo-devel tiff-devel libpng-devel libopenexr-devel freetype-devel
- ffmpeg-devel opencolorio-devel"
+makedepends="boost-devel ffmpeg-devel fmt-devel freetype-devel giflib-devel
+ libjpeg-turbo-devel libopenexr-devel libopenjpeg-devel libpng-devel
+ libraw-devel libwebp-devel opencolorio-devel robin-map tiff-devel"
 short_desc="Library for reading and writing images"
 maintainer="lemmi <lemmi@nerd2nerd.org>"
 license="BSD"
 homepage="https://sites.google.com/site/openimageio/home"
 changelog="https://raw.githubusercontent.com/OpenImageIO/oiio/release/CHANGES.md"
 distfiles="https://github.com/OpenImageIO/oiio/archive/Release-${version}.tar.gz"
-checksum=a019086c05a6150d445a2240bab1723dff540dde5f5c327c36a97f0b5ae0e157
+checksum=120170e8517d8911f52b0fb56f14eb56aad88edd72cc9e4b2e35c74025293b7d
 
 CXXFLAGS="-faligned-new"
 case "$XBPS_TARGET_MACHINE" in
@@ -48,14 +48,17 @@ pre_build() {
 }
 
 post_install() {
-	vlicense LICENSE
+	vlicense LICENSE.md
 }
 
 openimageio-devel_package() {
 	depends="${sourcepkg}-${version}_${revision}"
 	short_desc+=" - development files"
 	pkg_install() {
-		vmove usr/include
 		vmove "usr/lib/*.so"
+		vmove usr/include
+		vmove usr/lib/cmake
+		vmove usr/lib/pkgconfig
+		vmove usr/share/cmake
 	}
 }
