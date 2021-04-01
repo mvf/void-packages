@@ -1,7 +1,7 @@
 # Template file for 'stepmania'
 pkgname=stepmania
 version=5.0.12
-revision=2
+revision=3
 build_style=cmake
 make_cmd=make
 cmake_builddir="Build"
@@ -25,7 +25,7 @@ export CMAKE_GENERATOR="Unix Makefiles"
 post_install() {
 	vlicense Docs/Licenses.txt
 
-	mkdir -p ${DESTDIR}/usr/bin
-	cd ${DESTDIR}
-	ln -sf ../../opt/stepmania-5.0/stepmania usr/bin/
+	mkdir -p "${DESTDIR}"/usr/bin
+	printf '#!/bin/sh\ncd /opt/stepmania-5.0\nexec ./stepmania "$@"\n' > "${DESTDIR}"/usr/bin/stepmania
+	chmod +x "${DESTDIR}"/usr/bin/stepmania
 }
