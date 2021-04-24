@@ -1,0 +1,27 @@
+--- a/src/luks.c
++++ b/src/luks.c
+@@ -61,20 +61,20 @@ luks_decrypt( const char* device, char* decrypted, int decrypted_size,
+     if( password_file )
+         if( readonly == 1 )
+             status = spawnl( CRYPTSETUP_SPAWN_OPTIONS, 
+-                    CRYPTSETUP, CRYPTSETUP, "luksOpen", "--key-file",
++                    CRYPTSETUP, CRYPTSETUP, "luksOpen", "--allow-discards", "--key-file",
+                     password_file, "--readonly", device, label, NULL );
+         else
+             status = spawnl( CRYPTSETUP_SPAWN_OPTIONS, 
+-                    CRYPTSETUP, CRYPTSETUP, "luksOpen", "--key-file",
++                    CRYPTSETUP, CRYPTSETUP, "luksOpen", "--allow-discards", "--key-file",
+                     password_file, device, label, NULL );
+     else
+         if( readonly == 1 )
+             status = spawnl( CRYPTSETUP_SPAWN_OPTIONS, 
+-                    CRYPTSETUP, CRYPTSETUP, "--readonly", "luksOpen",
++                    CRYPTSETUP, CRYPTSETUP, "--readonly", "luksOpen", "--allow-discards",
+                     device, label, NULL );
+         else
+             status = spawnl( CRYPTSETUP_SPAWN_OPTIONS, 
+-                    CRYPTSETUP, CRYPTSETUP, "luksOpen", device, label, NULL );
++                    CRYPTSETUP, CRYPTSETUP, "luksOpen", "--allow-discards", device, label, NULL );
+ 
+     if( status == 0 )
+         /* yes, we have a LUKS device */

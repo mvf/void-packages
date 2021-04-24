@@ -1,0 +1,20 @@
+# Template file for 'mvf-pmount'
+pkgname=mvf-pmount
+version=0.9.23
+revision=1
+wrksrc="pmount-${version}"
+conf_files="/etc/pmount.allow"
+build_style=gnu-configure
+hostmakedepends="intltool"
+makedepends="libblkid-devel"
+short_desc="Patched pmount with exfat and LUKS TRIM support"
+maintainer="Matthias von Faber <mvf@gmx.eu>"
+license="GPL-3.0-only"
+homepage="http://pmount.alioth.debian.org/"
+distfiles="${DEBIAN_SITE}/main/p/pmount/pmount_${version}.orig.tar.bz2"
+checksum=db38fc290b710e8e9e9d442da2fb627d41e13b3ee80326c15cc2595ba00ea036
+conflicts=pmount
+
+pre_configure() {
+	sed -i -e 's/-o root -g root //' src/Makefile.in
+}
