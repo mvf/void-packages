@@ -1,0 +1,38 @@
+From b8849be6f1374cda071976359e2b19f97deb5753 Mon Sep 17 00:00:00 2001
+From: Tom Szilagyi <tom@sig7.se>
+Date: Sat, 22 May 2021 11:49:54 +0200
+Subject: [PATCH] Only set WMNormalHints if size has changed
+
+This avoids an infinite loop of ConfigureNotify events in case the WM
+sends such an event on every call to XSetWMNormalHints, even if the
+reported geometry has not changed.
+
+Closes #38
+---
+ src/main.cc | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git src/main.cc src/main.cc
+index a1d72e9..cca015c 100644
+--- src/main.cc
++++ src/main.cc
+@@ -919,9 +919,13 @@ x11Event (XEvent& event, XIC& xic, int ptyFd, bool& destroyed, bool& holdPtyIn)
+       break;
+    case ConfigureNotify:
+       vt->resize (event.xconfigure.width, event.xconfigure.height);
+-      sizeHints.width = event.xconfigure.width;
+-      sizeHints.height = event.xconfigure.height;
+-      XSetWMNormalHints (xDisplay, xWindow, &sizeHints);
++      if (sizeHints.width != event.xconfigure.width ||
++          sizeHints.height != event.xconfigure.height)
++      {
++         sizeHints.width = event.xconfigure.width;
++         sizeHints.height = event.xconfigure.height;
++         XSetWMNormalHints (xDisplay, xWindow, &sizeHints);
++      }
+       redraw = true;
+       break;
+    case ReparentNotify:
+-- 
+2.31.1
+

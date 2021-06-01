@@ -1,0 +1,13 @@
+# Template file for 'zutty'
+pkgname=zutty
+version=0.9
+revision=1
+build_style=waf3
+hostmakedepends="pkg-config"
+makedepends="freetype-devel libXmu-devel libglvnd-devel"
+short_desc="Terminal Emulator"
+maintainer="Matthias von Faber <mvf@gmx.eu>"
+license="GPL-3.0-or-later"
+homepage="https://tomscii.sig7.se/zutty"
+distfiles="https://github.com/tomszilagyi/zutty/archive/refs/tags/${version}.tar.gz"
+checksum=9aaf115a806114a793a6a423384781cada7a767efc209b6c6a59f3eddc942c3e
