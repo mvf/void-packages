@@ -1,0 +1,40 @@
+# Template file for 'mvf-pcsx2'
+pkgname=mvf-pcsx2
+_githash=b61619cf4026f91ef05d70161dac1f5b5a4ea382
+version=1.6.99
+revision=1
+wrksrc=pcsx2-${_githash}
+create_wrksrc=yes
+build_wrksrc=pcsx2
+build_style=cmake
+configure_args="-DPACKAGE_MODE=1 -DSDL2_API=TRUE -DXDG_STD=1"
+hostmakedepends="pkg-config sparsehash perl"
+makedepends="alsa-lib-devel SDL2-devel fmt-devel glew-devel glib-devel
+ glu-devel libaio-devel libcanberra-devel libjpeg-turbo-devel libpcap-devel
+ portaudio-devel soundtouch-devel wxWidgets-gtk3-devel"
+depends="desktop-file-utils"
+short_desc="Sony PlayStation 2 emulator"
+maintainer="Matthias von Faber <mvf@gmx.eu>"
+license="GPL-3.0-or-later, GPL-2.0-or-later, LGPL-2.1-or-later, LGPL-3.0-or-later"
+homepage="http://www.pcsx2.net"
+distfiles="
+ https://github.com/PCSX2/pcsx2/archive/${_githash}.tar.gz
+ https://github.com/rtissera/libchdr/archive/a17c0da7e9efa8cbb752c707df7d5457b2149fb8.tar.gz
+ https://github.com/jbeder/yaml-cpp/archive/98acc5a8874faab28b82c28936f4b400b389f5d6.tar.gz
+"
+checksum="
+ 77e67b8d9e65e839b12539684b8cc787986b9ee24efb9200ed88246df0c9ada6
+ 28dbb120c60bb1f414cd3b609c1a355e0099629453d6fac6c2e37156d05bfcca
+ 79ab7069ef1c7c3632e7ffe095f7185d4c77b64d8035db3c085c239d4fe96d5f
+"
+
+post_extract() {
+	mv pcsx2-${_githash} pcsx2
+
+	for d in libchdr yaml-cpp
+	do
+		mv $d-* $d
+		rmdir pcsx2/3rdparty/$d/$d
+		ln -sr $d pcsx2/3rdparty/$d/$d
+	done
+}
