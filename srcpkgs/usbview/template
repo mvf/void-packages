@@ -1,0 +1,17 @@
+# Template file for 'usbview'
+pkgname=usbview
+version=2.1
+revision=1
+build_style=gnu-configure
+hostmakedepends="ImageMagick autoconf automake pkg-config"
+makedepends="gtk+3-devel"
+short_desc="Display information on USB devices"
+maintainer="Matthias von Faber <mvf@gmx.eu>"
+license="GPL-2.0-only"
+homepage="http://www.kroah.com/linux-usb/"
+distfiles="https://github.com/gregkh/usbview/archive/refs/tags/v${version}.tar.gz"
+checksum=781cdba9c22ebbe5e1f9c1033ce9d837aac93b06af68724710ed19b26122cbcc
+
+pre_configure() {
+	autoreconf -fi
+}
