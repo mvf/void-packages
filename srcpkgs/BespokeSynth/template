@@ -1,0 +1,64 @@
+# Template file for 'BespokeSynth'
+pkgname=BespokeSynth
+version=1.0.999
+revision=1
+_bespoke=ed3b0ca9bf29bc39feebbde6de02831f6b73a1d6
+_juce=6.1.2
+_pybind11=2.8.1
+_tuning_library=eb8617be49ac3c2436cf54de6bff94a1b1c94acf
+_mts_esp=fcfaa59a043d515d288c9d587bf61a0a7d7571a8
+_jsoncpp=1.9.5
+wrksrc=${pkgname}-${_bespoke}
+build_style=cmake
+_jucedeps="freetype-devel libX11-devel libXcursor-devel libXinerama-devel
+ libXrandr-devel"
+hostmakedepends="${_jucedeps} pkg-config python3-devel"
+makedepends="${_jucedeps} alsa-lib-devel jack-devel
+ libglvnd-devel libusb-devel python3-devel"
+short_desc="Modular audio workstation and synthesizer"
+maintainer="Matthias von Faber <mvf@gmx.eu>"
+license="GPL-3.0-or-later"
+homepage="https://www.bespokesynth.com/"
+distfiles="https://github.com/BespokeSynth/BespokeSynth/archive/${_bespoke}.tar.gz
+ https://github.com/juce-framework/JUCE/archive/${_juce}.tar.gz
+ https://github.com/pybind/pybind11/archive/v${_pybind11}.tar.gz
+ https://github.com/surge-synthesizer/tuning-library/archive/${_tuning_library}.tar.gz
+ https://github.com/ODDSound/MTS-ESP/archive/${_mts_esp}.tar.gz
+ https://github.com/open-source-parsers/jsoncpp/archive/${_jsoncpp}.tar.gz"
+checksum="ab05be6c1d38f728c1b2af4c9672abf8e67f149e4d0ef85636b8d22078f5ed7c
+ 7b519711f65bf14054cd5b579d936920066cfa15b60895c04bd9fa0cb087be28
+ f1bcc07caa568eb312411dde5308b1e250bd0e1bc020fae855bf9f43209940cc
+ f533cfa378e26da495b2364af5ff86e509e31b984e2cad7f20fdc81b0e421b26
+ 7daff00bae1295d099cd7ffec143ddd3df36bd55f2906fd227245d2608aa42dd
+ f409856e5920c18d0c2fb85276e24ee607d2a09b5e7d5f0a371368903c275da2"
+
+if [ "$XBPS_TARGET_LIBC" = "musl" ]; then
+	makedepends+=" libexecinfo-devel"
+	_linker_flags="-lexecinfo"
+fi
+
+if [ "$XBPS_TARGET_NO_ATOMIC8" ]; then
+	makedepends+=" libatomic-devel"
+	_linker_flags+=" -latomic"
+fi
+
+post_extract() {
+	local _src_dst
+	local _src
+	local _dst
+	for _src_dst in \
+		JUCE-${_juce}:JUCE \
+		MTS-ESP-${_mts_esp}:oddsound-mts/MTS-ESP \
+		jsoncpp-${_jsoncpp}:json/jsoncpp \
+		pybind11-${_pybind11}:pybind11 \
+		tuning-library-${_tuning_library}:tuning-library \
+	; do
+		_src=${_src_dst%:*}
+		_dst=${_src_dst#*:}
+		rmdir libs/${_dst}
+		mv ../${_src} ${wrksrc}/libs/${_dst}
+	done
+	if [ "$_linker_flags" ]; then
+		sed -i "1iset(CMAKE_EXE_LINKER_FLAGS \"${_linker_flags}\")" CMakeLists.txt
+	fi
+}

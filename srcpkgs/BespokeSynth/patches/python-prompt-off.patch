@@ -1,0 +1,14 @@
+--- a/Source/ScriptModule.cpp
++++ b/Source/ScriptModule.cpp
+@@ -74,11 +74,7 @@ ofColor ScriptModule::sBackgroundTextColor = ofColor::white;
+ bool ScriptModule::sPythonInitialized = false;
+ //static
+ bool ScriptModule::sHasPythonEverSuccessfullyInitialized =
+-#ifdef BESPOKE_PORTABLE_PYTHON
+ true;
+-#else
+-false;
+-#endif
+ 
+ //static
+ ofxJSONElement ScriptModule::sStyleJSON;

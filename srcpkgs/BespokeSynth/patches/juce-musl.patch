@@ -1,0 +1,47 @@
+--- a/libs/JUCE/extras/Build/juceaide/CMakeLists.txt
++++ b/libs/JUCE/extras/Build/juceaide/CMakeLists.txt
+@@ -56,8 +56,15 @@ else()
+     unset(ENV{ASM})
+     unset(ENV{CC})
+     unset(ENV{CXX})
++    unset(ENV{CFLAGS})
++    unset(ENV{CXXFLAGS})
+ 
+     message(STATUS "Configuring juceaide")
++    if("$ENV{XBPS_LIBC}" STREQUAL "musl")
++        set(JUCEAIDE_LINKER_FLAGS "-lexecinfo")
++    else()
++        set(JUCEAIDE_LINKER_FLAGS "-lm")
++    endif()
+ 
+     # Looks like we're boostrapping, reinvoke CMake
+     execute_process(COMMAND "${CMAKE_COMMAND}"
+@@ -67,6 +74,8 @@ else()
+             "-DCMAKE_BUILD_TYPE=Debug"
+             "-DJUCE_BUILD_HELPER_TOOLS=ON"
+             "-DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}"
++            "-DCMAKE_EXE_LINKER_FLAGS=${JUCEAIDE_LINKER_FLAGS}"
++            "-DPKG_CONFIG_EXECUTABLE=/usr/bin/pkg-config"
+         WORKING_DIRECTORY "${JUCE_SOURCE_DIR}"
+         OUTPUT_VARIABLE command_output
+         ERROR_VARIABLE command_output
+--- a/libs/JUCE/modules/juce_core/native/juce_linux_SystemStats.cpp
++++ b/libs/JUCE/modules/juce_core/native/juce_linux_SystemStats.cpp
+@@ -198,7 +198,7 @@ String SystemStats::getComputerName()
+ 
+ String SystemStats::getUserLanguage()
+ {
+-   #if JUCE_BSD
++   #ifndef __GLIBC__
+     if (auto langEnv = getenv ("LANG"))
+         return String::fromUTF8 (langEnv).upToLastOccurrenceOf (".UTF-8", false, true);
+ 
+@@ -210,7 +210,7 @@ String SystemStats::getUserLanguage()
+ 
+ String SystemStats::getUserRegion()
+ {
+-   #if JUCE_BSD
++   #ifndef __GLIBC__
+     return {};
+    #else
+     return getLocaleValue (_NL_IDENTIFICATION_TERRITORY);
