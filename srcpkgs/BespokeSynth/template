@@ -34,12 +34,11 @@ checksum="ab05be6c1d38f728c1b2af4c9672abf8e67f149e4d0ef85636b8d22078f5ed7c
 
 if [ "$XBPS_TARGET_LIBC" = "musl" ]; then
 	makedepends+=" libexecinfo-devel"
-	_linker_flags="-lexecinfo"
 fi
 
 if [ "$XBPS_TARGET_NO_ATOMIC8" ]; then
 	makedepends+=" libatomic-devel"
-	_linker_flags+=" -latomic"
+	configure_args+=" -DCMAKE_EXE_LINKER_FLAGS=-latomic"
 fi
 
 post_extract() {
@@ -58,7 +57,4 @@ post_extract() {
 		rmdir libs/${_dst}
 		mv ../${_src} ${wrksrc}/libs/${_dst}
 	done
-	if [ "$_linker_flags" ]; then
-		sed -i "1iset(CMAKE_EXE_LINKER_FLAGS \"${_linker_flags}\")" CMakeLists.txt
-	fi
 }
