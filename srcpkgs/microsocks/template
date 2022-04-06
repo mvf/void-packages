@@ -1,0 +1,15 @@
+# Template file for 'microsocks'
+pkgname=microsocks
+version=1.0.3
+revision=1
+build_style=gnu-makefile
+short_desc="Tiny, portable SOCKS5 server"
+maintainer="Matthias von Faber <mvf@gmx.eu>"
+license="MIT"
+homepage="https://github.com/rofl0r/microsocks"
+distfiles="https://github.com/rofl0r/microsocks/archive/refs/tags/v${version}.tar.gz"
+checksum=6801559b6f8e17240ed8eef17a36eea8643412b5a7476980fd4e24b02a021b82
+
+pre_configure() {
+	echo "prefix = /usr" > ${wrksrc}/config.mak
+}
