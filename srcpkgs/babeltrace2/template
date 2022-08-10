@@ -1,0 +1,38 @@
+# Template file for 'babeltrace'
+pkgname=babeltrace2
+version=2.0.4
+revision=1
+build_style=gnu-configure
+wrksrc="babeltrace-${version}"
+hostmakedepends="asciidoc autoconf automake bison flex libtool pkg-config xmlto"
+makedepends="libelf glib-devel popt-devel"
+short_desc="Open source trace format converter"
+maintainer="Matthias von Faber <mvf@pm.me>"
+license="MIT, GPL-2.0-or-later, LGPL-2.1-or-later"
+homepage="https://babeltrace.org"
+distfiles="https://github.com/efficios/babeltrace/archive/refs/tags/v${version}.tar.gz"
+checksum=37d3e81bc4abc42e4fa99488685eab3458212c6531ccadcf53cf1534d762bf22
+
+# if [ "$CROSS_BUILD" ]; then
+# 	# configure_args+=" ac_cv_lib_elf_elf_version=0.170"
+# 	configure_args+=" --disable-debug-info"
+# fi
+
+pre_configure() {
+	autoreconf -fi
+}
+
+# post_install() {
+# 	vlicense mit-license.txt
+# }
+
+babeltrace2-devel_package() {
+	short_desc+=" - development files"
+	depends="${makedepends} ${sourcepkg}>=${version}_${revision}"
+	pkg_install() {
+		vmove usr/include
+		vmove usr/lib/pkgconfig
+		vmove usr/lib/*.so
+		vmove usr/lib/*.a
+	}
+}
