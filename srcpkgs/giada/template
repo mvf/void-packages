@@ -1,11 +1,17 @@
 # Template file for 'giada'
 pkgname=giada
-version=0.17.0
+version=0.22.0
 revision=1
+_geompp_gitrev=236c8603b7883ddf6691f9a8f466f8e234c1ac61
+_juce_tag=6.1.5
+_mcl_audio_buffer_gitrev=d641e3e40219ea931e2a9945a1ef0aa2f54f4d2c
+_mcl_atomic_swapper_gitrev=acc48c7ab416575f2fde1afd19faa0be378bb595
+_vst3sdk_tag=3.7.5_build_44
+create_wrksrc=yes
+build_wrksrc="${pkgname}-${version}"
 build_style=cmake
-# configure_args="--target=linux"
-hostmakedepends="cmake"
-makedepends="fltk-devel jack-devel libsamplerate-devel
+hostmakedepends="pkg-config"
+makedepends="fltk-devel fmt-devel jack-devel libsamplerate-devel
  libsndfile-devel libXpm-devel pulseaudio-devel rtmidi-devel libXcursor-devel
  json-c++"
 short_desc="Loop machine, audio tool for DJs, live performers and musicians"
@@ -13,24 +19,49 @@ maintainer="Duncaen <duncaen@voidlinux.org>"
 license="GPL-3.0-only"
 homepage="https://www.giadamusic.com/"
 changelog="https://github.com/monocasual/giada/raw/master/ChangeLog"
-distfiles="https://github.com/monocasual/giada/archive/v${version}.tar.gz"
-checksum=b879f5ba7e9f34d7422aedd89d1d0baa91387b3528e057b4df25e1f2f8d661ef
+distfiles="https://github.com/monocasual/giada/archive/v${version}.tar.gz
+ https://github.com/monocasual/geompp/archive/${_geompp_gitrev}.tar.gz
+ https://github.com/juce-framework/JUCE/archive/refs/tags/${_juce_tag}.tar.gz
+ https://github.com/monocasual/mcl-audio-buffer/archive/${_mcl_audio_buffer_gitrev}.tar.gz
+ https://github.com/monocasual/mcl-atomic-swapper/archive/${_mcl_atomic_swapper_gitrev}.tar.gz
+ https://github.com/steinbergmedia/vst3sdk/archive/v${_vst3sdk_tag}.tar.gz>vst3sdk-v${_vst3sdk_tag}.tar.gz
+ https://github.com/steinbergmedia/vst3_base/archive/v${_vst3sdk_tag}.tar.gz>vst3_base-v${_vst3sdk_tag}.tar.gz
+ https://github.com/steinbergmedia/vst3_pluginterfaces/archive/v${_vst3sdk_tag}.tar.gz>vst3_pluginterfaces-v${_vst3sdk_tag}.tar.gz
+ https://github.com/steinbergmedia/vst3_public_sdk/archive/v${_vst3sdk_tag}.tar.gz>vst3_public_sdk-v${_vst3sdk_tag}.tar.gz"
+checksum="3eddc03c26eefad4ecb16551ba32683d7aa245950274b50b1a0d1fab32d64044
+ f215475ac70aaadf60c446d95407fb77d78e827bc9919734c16e99d08f75b7c6
+ aaef2066ca117818bdb037f19cd7b1d27bf7bd8c58ed269f609258264e78bae1
+ 0f1dceeb7ca024d0acad9439386cfe9df44fd74b5bb29a6bae5219af2f69bc19
+ 1e5f3fdb367ee64b386062589a7a9a3994f70caf8742716762b908c1851e5a06
+ ed359d496796588aa0be86cc902e2472e9624abf6af3a85b2a5711ad069fb9f3
+ 360c51e3fbb33c0bf389175d07f8f09c175120296e9b0e6a4d222663e92bccf8
+ f34e313c7ff6661401275947a8c3d695d9a2c06c84135c9c8d4939f5316393a7
+ 11992e0fddff5173785bcd9a4ce9e57f3262b07e5f2c76a8aa812ef99497e3be"
+patch_args="-Np1 -d $build_wrksrc"
 
 if [ "$XBPS_TARGET_NO_ATOMIC8" ]; then
 	makedepends+=" libatomic-devel"
 fi
 
 post_extract() {
+	cd $build_wrksrc
 	if [ "$XBPS_TARGET_NO_ATOMIC8" ]; then
 		vsed -e '/list(APPEND LIBRARIES)/a list(APPEND LIBRARIES atomic)' -i CMakeLists.txt
 	fi
-	vsed -e 's;deps/json/single_include/\(nlohmann/json.hpp\);\1;' -i \
-		src/core/init.cpp \
-		src/core/midiMapConf.cpp \
-		src/core/conf.cpp \
-		src/core/patch.cpp
-}
-
-do_install() {
-	vbin build/giada
+	cd src/deps
+	for src_dest in \
+	 geompp-${_geompp_gitrev}:geompp \
+	 JUCE-${_juce_tag}:juce \
+	 mcl-audio-buffer-${_mcl_audio_buffer_gitrev}:mcl-audio-buffer \
+	 mcl-atomic-swapper-${_mcl_atomic_swapper_gitrev}:mcl-atomic-swapper \
+	 vst3sdk-${_vst3sdk_tag}:vst3sdk \
+	 vst3_base-${_vst3sdk_tag}:vst3sdk/base \
+	 vst3_pluginterfaces-${_vst3sdk_tag}:vst3sdk/pluginterfaces \
+	 vst3_public_sdk-${_vst3sdk_tag}:vst3sdk/public.sdk
+	do
+		_src=${src_dest%:*}
+		_dst=${src_dest#*:}
+		rmdir $_dst
+		ln -sr $wrksrc/$_src $_dst
+	done
 }

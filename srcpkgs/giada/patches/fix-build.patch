@@ -1,0 +1,38 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -207,7 +207,6 @@ list(APPEND SOURCES
+ 	src/utils/fs.cpp
+ 	src/utils/ver.cpp
+ 	src/utils/string.cpp
+-	src/deps/rtaudio/RtAudio.cpp
+ 	src/deps/mcl-audio-buffer/src/audioBuffer.cpp)
+ 
+ list(APPEND PREPROCESSOR_DEFS)
+@@ -319,14 +318,14 @@ list(APPEND INCLUDE_DIRS ${LIBRARY_RTMIDI_INCLUDE_DIR})
+ 
+ set(FLTK_SKIP_FLUID TRUE)  # Don't search for FLTK's fluid
+ set(FLTK_SKIP_OPENGL TRUE) # Don't search for FLTK's OpenGL
+-find_package(FLTK REQUIRED NO_MODULE)
++find_package(FLTK REQUIRED)
+ list(APPEND LIBRARIES fltk)
+ list(APPEND INCLUDE_DIRS ${FLTK_INCLUDE_DIRS})
+ message("FLTK library found in " ${FLTK_DIR})
+ 
+ # Libsndfile
+ 
+-find_package(SndFile CONFIG)
++find_package(SndFile)
+ if (SndFile_FOUND)
+ 	list(APPEND LIBRARIES SndFile::sndfile)
+ 	message("Libsndfile library found in " ${SndFile_DIR})
+@@ -397,9 +396,7 @@ list(APPEND LIBRARIES fmt::fmt)
+ 
+ # nlohmann_json (embedded as git submodule)
+ 
+-set(JSON_Install OFF CACHE INTERNAL "") # No need to install it
+-set(JSON_BuildTests OFF CACHE INTERNAL "") # Don't build tests
+-add_subdirectory(src/deps/json)
++find_package(nlohmann_json REQUIRED)
+ list(APPEND LIBRARIES nlohmann_json::nlohmann_json)
+ 
+ # Catch (if tests enabled)
