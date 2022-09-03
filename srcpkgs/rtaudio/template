@@ -1,22 +1,16 @@
 # Template file for 'rtaudio'
 pkgname=rtaudio
-version=5.1.0
+version=5.2.0
 revision=1
-build_style=gnu-configure
-configure_args="--with-alsa --with-jack --with-pulse"
+build_style=cmake
 hostmakedepends="pkg-config"
 makedepends="alsa-lib-devel pulseaudio-devel jack-devel"
 short_desc="C++ classes for common Linux, MacOS and Windows realtime audio APIs"
-maintainer="Orphaned <orphan@voidlinux.org>"
+maintainer="Matthias von Faber <mvf@gmx.eu>"
 license="MIT"
 homepage="http://www.music.mcgill.ca/~gary/rtaudio/"
-distfiles="http://www.music.mcgill.ca/~gary/rtaudio/release/rtaudio-${version}.tar.gz"
-checksum=ff138b2b6ed2b700b04b406be718df213052d4c952190280cf4e2fab4b61fe09
-
-post_install() {
-	sed -n '/Copyright/,/IN THE SOFTWARE/p' RtAudio.h > LICENSE
-	vlicense LICENSE
-}
+distfiles="https://github.com/thestk/rtaudio/archive/refs/tags/${version}.tar.gz"
+checksum=a8d9c738addffd485c3f0bab14cbba72600267e3113f274398c67829bbb49332
 
 rtaudio-devel_package() {
 	depends="rtaudio-${version}_${revision}"
@@ -25,6 +19,10 @@ rtaudio-devel_package() {
 		vmove usr/include
 		vmove usr/lib/pkgconfig
 		vmove "usr/lib/*.so"
-		vmove "usr/lib/*.a"
+		vmove usr/share
 	}
+}
+
+post_install() {
+	vlicense LICENSE
 }

@@ -3007,7 +3007,7 @@ libPocoNetSSL.so.64 poco-1.9.4_3
 libPocoCrypto.so.64 poco-1.9.4_3
 libPtex.so ptex-2.3.2_1
 libopenblas.so.0 openblas-0.2.19_1
-librtaudio.so.6 rtaudio-5.1.0_1
+librtaudio.so.6 rtaudio-5.2.0_1
 librtmidi.so.5 rtmidi-4.0.0_1
 libbiblesync.so.2.1.0 biblesync-2.1.0_1
 libbac-9.4.2.so bacula-common-9.4.2_4
