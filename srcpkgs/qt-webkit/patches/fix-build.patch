@@ -1,0 +1,52 @@
+--- a/Source/WebCore/xml/XPathGrammar.y	2017-06-16 14:46:36.000000000 +0200
++++ b/Source/WebCore/xml/XPathGrammar.y	2020-09-18 23:36:10.000000000 +0200
+@@ -53,6 +53,7 @@
+ 
+ %pure_parser
+ %parse-param { WebCore::XPath::Parser* parser }
++%define api.header.include { "XPathGrammar.h" }
+ 
+ %union
+ {
+--- a/Source/WebCore/css/makegrammar.pl	2017-06-16 14:46:36.000000000 +0200
++++ b/Source/WebCore/css/makegrammar.pl	2020-09-18 22:59:10.000000000 +0200
+@@ -73,23 +73,7 @@
+ }
+ 
+ my $fileBase = File::Spec->join($outputDir, $filename);
+-system("$bison -d -p $symbolsPrefix $grammarFilePath -o $fileBase.cpp");
+-
+-open HEADER, ">$fileBase.h" or die;
+-print HEADER << "EOF";
+-#ifndef CSSGRAMMAR_H
+-#define CSSGRAMMAR_H
+-EOF
+-
+-open HPP, "<$fileBase.cpp.h" or open HPP, "<$fileBase.hpp" or die;
+-while (<HPP>) {
+-    print HEADER;
+-}
+-close HPP;
+-
+-print HEADER "#endif\n";
+-close HEADER;
+-
+-unlink("$fileBase.cpp.h");
+-unlink("$fileBase.hpp");
++my @bisonCommand = ($bison, "--defines=$fileBase.h", "-p", $symbolsPrefix, $grammarFilePath, "-o", "$fileBase.cpp");
++push @bisonCommand, "--no-lines" if $^O eq "MSWin32"; # Work around bug in bison >= 3.0 on Windows where it puts backslashes into #line directives.
++system(@bisonCommand) == 0 or die;
+ 
+--- a/Source/WTF/wtf/gobject/GRefPtr.h
++++ b/Source/WTF/wtf/gobject/GRefPtr.h
+@@ -28,9 +28,7 @@
+ #include <wtf/AlwaysInline.h>
+ #include <wtf/RefPtr.h>
+ #include <algorithm>
+-
+-extern "C" void g_object_unref(gpointer);
+-extern "C" gpointer g_object_ref_sink(gpointer);
++#include <glib.h>
+ 
+ namespace WTF {
+ 
