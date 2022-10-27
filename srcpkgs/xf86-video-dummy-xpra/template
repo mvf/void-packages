@@ -1,0 +1,24 @@
+# Template file for 'xf86-video-dummy-xpra'
+pkgname=xf86-video-dummy-xpra
+version=0.3.8
+revision=1
+wrksrc=xf86-video-dummy-${version}
+build_style=gnu-configure
+hostmakedepends="pkg-config"
+makedepends="xorg-server-devel"
+depends="virtual?xserver-abi-video-25_1"
+short_desc="Xorg dummy video driver with Xpra patches"
+maintainer="Matthias von Faber <mvf@gmx.eu>"
+license="MIT"
+homepage="http://xorg.freedesktop.org"
+distfiles="${XORG_SITE}/driver/${wrksrc}.tar.bz2"
+checksum=3712bb869307233491e4c570732d6073c0dc3d99adfdb9977396a3fdf84e95b9
+lib32disabled=yes
+conflicts=xf86-video-dummy
+provides=${wrksrc}_${revision}
+
+LDFLAGS="-Wl,-z,lazy"
+
+post_install() {
+	vlicense COPYING
+}
