@@ -1,7 +1,7 @@
 # Template file for 'linux-tools'
 pkgname=linux-tools
 version=5.10.4
-revision=11
+revision=12
 build_style=meta
 hostmakedepends="asciidoc automake flex gettext libtool perl python3
  python3-docutils xmlto"
@@ -22,10 +22,13 @@ subpackages="cpupower freefall libcpupower libcpupower-devel libusbip libusbip-d
 
 CFLAGS="-Wno-error -fcommon"
 case "$XBPS_TARGET_MACHINE" in
+aarch64*)
+	subpackages+=" hyperv-daemons"
+	;;
 i686*|x86_64*)
 	makedepends+=" libnuma-devel"
 	depends+=" x86_energy_perf_policy>=${version} turbostat>=${version}"
-	subpackages+=" x86_energy_perf_policy turbostat"
+	subpackages+=" hyperv-daemons x86_energy_perf_policy turbostat"
 	;;
 ppc64*)
 	makedepends+=" libnuma-devel"
@@ -61,6 +64,14 @@ do_build() {
 		ppc64*) arch=powerpc; subarch=ppc64;;
 		ppc*) arch=powerpc; subarch=ppc;;
 		mips*) arch=mips;;
+	esac
+
+	case "$XBPS_TARGET_MACHINE" in
+		aarch64*|i686*|x86_64*)
+			make -C tools/hv V=1 ARCH=$arch \
+				sbindir='/usr/bin' \
+				CC=$CC LDFLAGS="$LDFLAGS" VERSION=${version}_${revision}
+			;;
 	esac
 
 	make -C tools/build V=1 \
@@ -134,6 +145,14 @@ do_install() {
 	# freefall
 	vbin "${wrksrc}/tools/laptop/freefall/freefall"
 
+	# hyperv-daemons
+	case "$XBPS_TARGET_MACHINE" in
+	aarch64*|i686*|x86_64*)
+		cd ${wrksrc}/tools/hv
+		make install ARCH=$arch DESTDIR=${DESTDIR} sbindir='/usr/bin'
+		;;
+	esac
+
 	# perf
 	cd ${wrksrc}/tools/perf
 	make CC=$CC LD=$LD CFLAGS="$CFLAGS" EXTRA_CFLAGS="$CFLAGS" LDFLAGS="$LDFLAGS" \
@@ -186,6 +205,16 @@ cpupower_package() {
 		vmove usr/share/doc/cpupower
 		vmove usr/share/locale
 		vmove etc/cpufreq-bench.conf
+	}
+}
+hyperv-daemons_package() {
+	short_desc="Support daemons for Linux running on Hyper-V"
+	pkg_install() {
+		vmove "usr/bin/hv_*_daemon"
+		vmove "usr/libexec/hypervkvpd"
+		vsv hv-fcopy-daemon
+		vsv hv-kvp-daemon
+		vsv hv-vss-daemon
 	}
 }
 libcpupower_package() {

@@ -1,0 +1,3 @@
+#!/bin/sh
+[ -e /dev/vmbus/hv_vss ] || exit 1
+exec hv_vss_daemon -n

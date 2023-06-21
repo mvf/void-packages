@@ -1,0 +1,3 @@
+#!/bin/sh
+[ -e /dev/vmbus/hv_kvp ] || exit 1
+exec hv_kvp_daemon -n
