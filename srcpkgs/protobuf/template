@@ -1,7 +1,7 @@
 # Template file for 'protobuf'
 pkgname=protobuf
 version=24.1
-revision=1
+revision=2
 build_style=cmake
 configure_args="-Dprotobuf_BUILD_SHARED_LIBS=ON -Dprotobuf_USE_EXTERNAL_GTEST=ON
  -Dprotobuf_BUILD_LIBPROTOC=ON -Dprotobuf_ABSL_PROVIDER=package
@@ -29,7 +29,6 @@ if [ "$CROSS_BUILD" ]; then
 fi
 
 post_install() {
-	rm -rf "${DESTDIR}/usr/lib/cmake"
 	vlicense LICENSE
 }
 
@@ -84,6 +83,7 @@ protobuf-devel_package() {
 	replaces="${conflicts}"
 	pkg_install() {
 		vmove usr/include
+		vmove usr/lib/cmake
 		vmove usr/lib/libprotobuf.so
 		vmove usr/lib/libprotobuf-lite.so
 		vmove usr/lib/pkgconfig
