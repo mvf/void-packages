@@ -1,10 +1,10 @@
 # Template file for 'libgpg-error'
 pkgname=libgpg-error
 version=1.49
-revision=1
+revision=2
 build_style=gnu-configure
 build_helper="qemu"
-configure_args="--enable-install-gpg-error-config"
+configure_args="--enable-install-gpg-error-config --enable-static"
 short_desc="Library for error values used by GnuPG component"
 maintainer="Orphaned <orphan@voidlinux.org>"
 license="LGPL-2.1-or-later, GPL-2.0-or-later"
@@ -25,6 +25,7 @@ libgpg-error-devel_package() {
 		vmove usr/include
 		vmove usr/lib/pkgconfig
 		vmove usr/share/aclocal
+		vmove "usr/lib/*.a"
 		vmove "usr/lib/*.so"
 	}
 }
