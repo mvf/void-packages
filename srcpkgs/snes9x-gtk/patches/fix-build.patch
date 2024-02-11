@@ -1,0 +1,23 @@
+--- a/snes9x/external/VulkanMemoryAllocator-Hpp/include/vk_mem_alloc.h
++++ b/snes9x/external/VulkanMemoryAllocator-Hpp/include/vk_mem_alloc.h
+@@ -287,10 +287,6 @@ extern "C" {
+     #endif
+ #endif
+ 
+-#ifndef VMA_STATS_STRING_ENABLED
+-    #define VMA_STATS_STRING_ENABLED 1
+-#endif
+-
+ ////////////////////////////////////////////////////////////////////////////////
+ ////////////////////////////////////////////////////////////////////////////////
+ //
+--- a/snes9x/vulkan/slang_shader.hpp
++++ b/snes9x/vulkan/slang_shader.hpp
+@@ -1,6 +1,7 @@
+ #pragma once
+ #include <string>
+ #include <vector>
++#include <cstdint>
+ 
+ struct SlangShader
+ {
