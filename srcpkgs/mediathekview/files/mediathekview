@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# The application requires certain JVM settings:
+# https://github.com/mediathekview/MediathekView/blob/14.1.0/src/main/java/mediathek/Main.java#L287
+java_options='-XX:+UseShenandoahGC
+-XX:ShenandoahGCHeuristics=compact
+-XX:+UseStringDeduplication
+-XX:MaxRAMPercentage=25
+--add-opens=java.desktop/sun.awt.X11=ALL-UNNAMED
+-DexternalUpdateCheck
+-jar /usr/share/java/mediathekview/MediathekView.jar'
+
+export JAVA_HOME=/usr/lib/jvm/openjdk21
+exec "$JAVA_HOME"/bin/java $java_options "$@"

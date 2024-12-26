@@ -1,0 +1,25 @@
+# Template file for 'mediathekview'
+pkgname=mediathekview
+version=14.1.0
+revision=1
+# Upstream only supports 64-bit: https://mediathekview.de/download/
+# openjdk21 not available on 32-bit anyway
+archs="x86_64* aarch64*"
+hostmakedepends="apache-maven openjdk21"
+depends="desktop-file-utils hicolor-icon-theme openjdk21-jre xdg-user-dirs"
+short_desc="Access the Mediathek of many German TV stations"
+maintainer="Matthias von Faber <mvf@gmx.eu>"
+license="GPL-3.0-or-later"
+homepage="https://mediathekview.de/"
+distfiles="https://github.com/mediathekview/mediathekview/archive/refs/tags/${version}.tar.gz"
+checksum=3342125a914b9ee92d2a2554fa57bf2c551d3633d646754b736f33f3dcc72e49
+
+do_build() {
+	mvn package -Dmaven.test.skip=true
+}
+
+do_install() {
+	vinstall target/MediathekView.jar 644 usr/share/java/mediathekview
+	vinstall "${FILESDIR}"/mediathekview.desktop 644 usr/share/applications
+	vbin "${FILESDIR}"/mediathekview
+}

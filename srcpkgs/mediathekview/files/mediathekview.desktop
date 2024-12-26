@@ -1,0 +1,11 @@
+[Desktop Entry]
+Categories=AudioVideo;Audio;Video;Player;TV;
+Comment=Access the Mediathek of many German TV stations
+Comment[de]=Durchsucht die Mediatheken vieler deutscher Sender
+Exec=mediathekview
+GenericName=Mediathek
+Icon=mediathekview
+Name=MediathekView
+StartupNotify=true
+Terminal=false
+Type=Application
