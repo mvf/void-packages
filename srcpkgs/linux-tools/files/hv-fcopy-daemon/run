@@ -1,0 +1,3 @@
+#!/bin/sh
+[ -e /dev/vmbus/hv_fcopy ] || exit 1
+exec hv_fcopy_daemon -n

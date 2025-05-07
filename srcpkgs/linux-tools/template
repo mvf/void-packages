@@ -1,7 +1,7 @@
 # Template file for 'linux-tools'
 pkgname=linux-tools
 version=6.5
-revision=6
+revision=7
 metapackage=yes
 hostmakedepends="asciidoc automake flex gettext libtool perl
  python3-setuptools python3-docutils xmlto pkg-config"
@@ -27,7 +27,7 @@ case "$XBPS_TARGET_MACHINE" in
 i686*|x86_64*)
 	makedepends+=" libnuma-devel"
 	depends+=" x86_energy_perf_policy>=${version} turbostat>=${version}"
-	subpackages+=" x86_energy_perf_policy turbostat"
+	subpackages+=" x86_energy_perf_policy turbostat hyperv-daemons"
 	;;
 ppc64*)
 	makedepends+=" libnuma-devel"
@@ -87,6 +87,12 @@ do_build() {
 			ARCH=${arch}
 
 		make -C tools/power/x86/turbostat ${makejobs} V=1 ARCH=$arch \
+			CC=$CC LD=$LD CFLAGS="$CFLAGS" LDFLAGS="$LDFLAGS"
+	esac
+
+	case "$XBPS_TARGET_MACHINE" in
+	aarch64*|i686*|x86_64*)
+		make -C tools/hv ${makejobs} V=1 ARCH=$arch \
 			CC=$CC LD=$LD CFLAGS="$CFLAGS" LDFLAGS="$LDFLAGS"
 	esac
 
@@ -253,6 +259,18 @@ turbostat_package() {
 		cd ${wrksrc}/tools/power/x86/turbostat
 		vbin turbostat
 		vman turbostat.8
+	}
+}
+hyperv-daemons_package() {
+	short_desc="Support daemons for Linux running on Hyper-V"
+	pkg_install() {
+		vsv hv-fcopy-daemon
+		vsv hv-kvp-daemon
+		vsv hv-vss-daemon
+		cd ${wrksrc}/tools/hv
+		vbin hv_fcopy_daemon
+		vbin hv_kvp_daemon
+		vbin hv_vss_daemon
 	}
 }
 tmon_package() {
