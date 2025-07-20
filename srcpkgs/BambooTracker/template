@@ -1,9 +1,9 @@
 # Template file for 'BambooTracker'
 pkgname=BambooTracker
-version=0.5.2
-revision=2
+version=0.6.5
+revision=1
 _emu2149_gitrev=63c0fe07df89bebdaccbfe982a3f737b39b409d3
-configure_args="-DSYSTEM_RTAUDIO=1 -DSYSTEM_RTMIDI=1"
+configure_args="-DSYSTEM_RTAUDIO=1 -DSYSTEM_RTMIDI=1 -DWARNINGS_ARE_ERRORS=0"
 build_style=cmake
 create_wrksrc=yes
 build_wrksrc="${pkgname}-${version}"
@@ -17,7 +17,7 @@ homepage="https://bambootracker.github.io/BambooTracker/"
 changelog="https://github.com/BambooTracker/BambooTracker/raw/master/CHANGELOG.md"
 distfiles="https://github.com/rerrahkr/BambooTracker/archive/v${version}.tar.gz
  https://github.com/rerrahkr/emu2149/archive/${_emu2149_gitrev}.tar.gz"
-checksum="2ded6425de7b47339f553ed2fa43d30ab07d0f8fc29e9e55ec5a561ec40c659f
+checksum="9390bb256483a62feaf2b28252f522b19db9b23de383508640a5679eaee8e467
  dce6b75fba6665283bb35b988b9cba82d243a60f8950eca0d4de10525c471bcd"
 
 post_extract() {
