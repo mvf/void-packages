@@ -1,10 +1,10 @@
 # Template file for 'libxcb'
 pkgname=libxcb
 version=1.17.0
-revision=1
+revision=2
 build_style=gnu-configure
 configure_args="--disable-build-docs --enable-xinput --enable-xkb"
-hostmakedepends="libtool pkg-config xorg-util-macros xcb-proto"
+hostmakedepends="automake libtool pkg-config xorg-util-macros xcb-proto"
 makedepends="libXdmcp-devel libXau-devel"
 short_desc="X protocol C-language Binding"
 maintainer="Orphaned <orphan@voidlinux.org>"

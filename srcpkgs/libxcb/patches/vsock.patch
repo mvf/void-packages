@@ -1,0 +1,192 @@
+From a22c13a691cfa32801ecaeed731d358f80a917e7 Mon Sep 17 00:00:00 2001
+From: Choung Park <choung.park+gitlab@gmail.com>
+Date: Mon, 25 Apr 2022 13:05:05 -0700
+Subject: [PATCH] Add AF_VSOCK
+
+---
+ README.md      | 65 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ configure.ac   |  5 ++++
+ src/xcb_util.c | 57 +++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 127 insertions(+)
+
+diff --git a/README.md b/README.md
+index a18c73c..5895df5 100644
+--- a/README.md
++++ b/README.md
+@@ -1,3 +1,68 @@
++Adding [AF_VSOCK](http://manpages.ubuntu.com/manpages/focal/man7/vsock.7.html) support to libxcb 1.14
++=====
++
++
++This fork of `libxcb` adds a new connection protocol '`vsock`' for X11 clients running in a virtual machine. Those X11 clients can connect back to the X11 server running in the host via `AF_VSOCK`.
++
++`AF_VSOCK` can be used to provide seamless communication between virtual machines and their host with minimal overhead. TCP can also provide similar experience, but it has the inherit overhead of TCP/IP protocol and may even cause security issues. For example, when you want to forward X11 clients running in a virtual machine with an isolated network (_ex._ Hyper-V virtual machines in Windows) to its host over TCP, you must allow public access for your X11 server running in the host.
++
++In order to protect your host from that public access, you need to set up firewall and it inevitably causes additional communication overhead as well as management headaches.
++
++## USAGE
++
++Although it's not well known, `libxcb` already supports various protocol names such as '_tcp_' and '_unix_'. For example, the following two `DISPLAY` variable settings are very valid and already processed exactly the same in the current version of `libxcb`:
++
++```
++export DISPLAY=127.0.0.1:0.0
++export DISPLAY=tcp/127.0.0.1:0.0
++```
++
++This fork extends the existing `libxcb` protocol framework for `AF_VSOCK` by adding a new protocol name '`vsock`'. When the `DISPLAY` variable is set as the following, this fork makes connections to an X11 server via `AF_VSOCK` accordingly:
++```
++export DISPLAY=vsock/[<VMADDR_CID>]:<display_number>[.<screen_number>]
++```
++For example, in order to have X11 clients running in a virtual machine forwarded to the X11 server running in the host, you can set the `DISPLAY` variable as:
++
++```
++export DISPLAY=vsock/2:0.0
++```
++It can be shortened as the following:
++
++```
++export DISPLAY=vsock/:0
++```
++
++'`2`' is the assigned number for `VMADDR_CID_HOST` and it's used as a default value when it's not found in the `DISPLAY` variable. For a port number, it can be any '*unsigned int*', but in order to maintain consistency, it's defined the same as the TCP method: `6000` + _&lt;display_number&gt;_.
++
++## TESTING
++
++Unfortunately, I was not able to make an `AF_VSOCK` patch for the current version of [X.org server](https://www.x.org/wiki/). However, you should be able to test this fork by running a relay program such as [socat (1.7.4+)](https://stefano-garzarella.github.io/posts/2021-01-22-socat-vsock/) in your host and set the `DISPLAY` variable to '`vsock/:0`' in virtual machines after replacing their '`libxcb.so.1.1.0`' with the one from this fork:
++
++
++1. Virtual Machine Host (with an X11 server running at display number '0' over a Unix socket)
++   ```
++   socat -b65536 VSOCK-LISTEN:6000,fork UNIX-CONNECT:/tmp/.X11-unix/X0
++   ```
++
++2. Virtual Machines (with this fork of `libxcb`)
++   ```
++   export DISPLAY=vsock/:0
++   ```
++
++3. Any X11 client program launched in virtual machines (2) should then be shown on the host (1).
++
++<br />
++
++If you're using Hyper-V or WSL2 in Windows, you can also test this fork with an X11 server for Windows that natively supports VSOCK (_ex._ [X410](https://x410.dev/cookbook/transparently-adding-native-support-for-vsock-in-x11-apps)).
++
++<br />
++
++<br />
++
++<br />
++
++
++
+ About libxcb
+ ============
+ 
+diff --git a/configure.ac b/configure.ac
+index 4e6f028..23fc3af 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -186,6 +186,11 @@ AC_SUBST(xcbincludedir)
+ XCB_CHECK_VISIBILITY()
+ 
+ AC_CHECK_FUNC(getaddrinfo, [AC_DEFINE(HAVE_GETADDRINFO, 1, [getaddrinfo() function is available])], )
++AC_CHECK_HEADER([linux/vm_sockets.h], [], [AC_DEFINE(HAVE_VSOCK_H, 1, [Define to 1 if you have the <linux/vm_sockets.h> header file.])],
++[#ifdef HAVE_VSOCK_H
++#include <linux/vm_sockets.h>
++#endif
++])
+ 
+ case $host_os in
+         # darwin through Snow Leopard has poll() but can't be used to poll character devices.
+diff --git a/src/xcb_util.c b/src/xcb_util.c
+index 5124d14..2ff70c6 100644
+--- a/src/xcb_util.c
++++ b/src/xcb_util.c
+@@ -44,6 +44,9 @@
+ #include <unistd.h>
+ #include <arpa/inet.h>
+ #include <sys/socket.h>
++#ifdef HAVE_VSOCK_H
++#include <linux/vm_sockets.h>
++#endif
+ #include <sys/un.h>
+ #include <netinet/in.h>
+ #include <netinet/tcp.h>
+@@ -237,6 +240,9 @@ int xcb_parse_display(const char *name, char **host, int *displayp,
+ }
+ 
+ static int _xcb_open_tcp(const char *host, char *protocol, const unsigned short port);
++#ifdef HAVE_VSOCK_H
++static int _xcb_open_vsock(const char *host, char *protocol, const unsigned short port);
++#endif
+ #ifndef _WIN32
+ static int _xcb_open_unix(char *protocol, const char *file);
+ #endif /* !WIN32 */
+@@ -257,6 +263,14 @@ static int _xcb_open(const char *host, char *protocol, const int display)
+     char *file = NULL;
+     int actual_filelen;
+ 
++#ifdef HAVE_VSOCK_H
++    if (protocol && (strcmp("vsock",protocol) == 0))
++    {
++        unsigned short port = X_TCP_PORT + display;
++        return _xcb_open_vsock(host, protocol, port);
++    }
++#endif
++
+ #ifndef _WIN32
+     if (protocol && strcmp("unix", protocol) == 0 && host && host[0] == '/') {
+         /* Full path to socket provided, ignore everything else */
+@@ -458,6 +472,49 @@ static int _xcb_open_tcp(const char *host, char *protocol, const unsigned short
+ #endif
+ }
+ 
++#ifdef HAVE_VSOCK_H
++static int _xcb_open_vsock(const char *host, char *protocol, const unsigned short port)
++{
++    struct sockaddr_vm savm;
++    int fd;
++
++    if(protocol && strcmp("vsock",protocol))
++        return -1;
++
++    fd = _xcb_socket(AF_VSOCK, SOCK_STREAM, 0);
++    if(fd == -1)
++        return -1;
++
++    {
++        socklen_t len = sizeof(int);
++        int val = 0;
++
++        if((getsockopt(fd, SOL_SOCKET, SO_SNDBUF, &val, &len) == 0) && (val < (64 * 1024)))
++        {
++            val = (64 * 1024);
++            setsockopt(fd, SOL_SOCKET, SO_SNDBUF, &val, sizeof(int));
++        }
++    }
++
++    memset(&savm, 0, sizeof(savm));
++
++    savm.svm_family = AF_VSOCK;
++    savm.svm_cid = VMADDR_CID_HOST;
++
++    if(*host != '\0')
++        savm.svm_cid = (unsigned int)atoi(host);
++
++    savm.svm_port = port;
++
++    if(connect(fd, (struct sockaddr*)&savm, sizeof(savm)) == -1)
++    {
++        close(fd);
++        return -1;
++    }
++    return fd;
++}
++#endif
++
+ #ifndef _WIN32
+ static int _xcb_open_unix(char *protocol, const char *file)
+ {
+-- 
+2.51.0
+
