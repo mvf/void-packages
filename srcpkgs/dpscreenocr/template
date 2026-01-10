@@ -1,0 +1,14 @@
+# Template file for 'dpscreenocr'
+pkgname=dpscreenocr
+version=1.5.0
+revision=1
+build_style=cmake
+configure_args="-DDPSO_QT_VERSION=6"
+hostmakedepends="gettext pandoc pkg-config qt6-base"
+makedepends="qt6-base-devel tesseract-ocr-devel"
+short_desc="Recognize text on screen"
+maintainer="Matthias von Faber <mvf@gmx.eu>"
+license="GPL-3.0-or-later"
+homepage="https://danpla.github.io/dpscreenocr/"
+distfiles="https://github.com/danpla/dpscreenocr/archive/refs/tags/v${version}.tar.gz"
+checksum=7d3d7e04f29024d8db956118578a9b3dddc39030f3af08dbc9026cdb57c6a645
